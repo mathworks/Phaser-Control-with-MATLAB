@@ -32,7 +32,7 @@ Run this script completely or section by section. Each specific data collection 
 
 ## License
 
-The license is available in the License.txt file in this GitHub repository.
+The license is available in the license.txt file in this GitHub repository.
 
 ## Community Support
 [MATLAB Central](https://www.mathworks.com/matlabcentral)
