@@ -28,10 +28,15 @@ The following hardware connections are required:
 
 [View from back](backsideconnections.jpg)
 
-So see connected iio devices, run the following command from the command line. The output should resemble the example output:
+So see connected iio devices, run the following command from the command line:
 
 ```
 $ iio_info -s
+```
+
+The output should resemble the example output:
+
+```
 Library version: 0.24 (git tag: c4498c2)
 Compiled with backends: xml ip usb serial
 Unable to create Local IIO context : Function not implemented (40)
