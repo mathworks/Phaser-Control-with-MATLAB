@@ -12,9 +12,21 @@ These files also allow users to collect data from a MATLAB PST example that was 
 
 ## Setup
 
-[The MATLAB Phaser setup guide](https://wiki.analog.com/phaser_matlab) explains the required setup steps in detail. Follow the instructions on this page to setup MATLAB and the Phaser.
+[The MATLAB Phaser setup guide](https://wiki.analog.com/phaser_matlab) explains the required setup steps in detail. Follow the instructions on this page to setup MATLAB and the Phaser. Follow these instructions up to the portion titled "Running the labs".
 
-For these scripts to run successfully, MATLAB must be configured properly and the Phaser must be connected. A single tone X-Band frequency source such as the HB100 should be placed at the Phaser broadside angle.
+For the scripts in this repository to run successfully, MATLAB must be configured properly and the Phaser must be connected. A single tone X-Band frequency source such as the HB100 should be placed at the Phaser broadside angle.
+
+## Hardware Connections
+
+The following hardware connections are required:
+
+- USB-C Power cable to insert into the antenna board
+- USB - Micro-USB cable to connect from computer to the ADI Pluto
+- USB - ethernet cable to connect from computer to rasberry pi
+
+![View from front](https://https://insidelabs-git.mathworks.com/gmencoff/matlab-phaser-board-data-collection/frontsideconnections.jpg?raw=true)
+
+![View from back](https://https://insidelabs-git.mathworks.com/gmencoff/matlab-phaser-board-data-collection/backsideconnections.jpg?raw=true)
 
 ### MathWorks Products (https://www.mathworks.com)
 
