@@ -16,7 +16,15 @@ These files also allow users to collect data from a MATLAB PST example that was 
 
 For the scripts in this repository to run successfully, MATLAB must be configured properly and the Phaser must be connected. A single tone X-Band frequency source such as the HB100 should be placed at the Phaser broadside angle.
 
-## Hardware Connections
+### MathWorks Products (https://www.mathworks.com)
+
+[The MATLAB Phaser setup guide](https://wiki.analog.com/phaser_matlab) lists the MATLAB products required in order to successfully run the files in this repo.
+
+### 3rd Party Products:
+
+[The MATLAB Phaser setup guide](https://wiki.analog.com/phaser_matlab) lists the 3rd party products required in order to successfully run the files in this repo.
+
+### Hardware Connections
 
 The following hardware connections are required:
 
@@ -45,14 +53,6 @@ Available contexts:
         1: 192.168.2.1 (Analog Devices PlutoSDR Rev.C (Z7010-AD9361)), serial=1044734c9605001313000c00984b4f92d0 [ip:pluto.local]
         2: 0456:b673 (Analog Devices Inc. PlutoSDR (ADALM-PLUTO)), serial=1044734c9605001313000c00984b4f92d0 [usb:1.11.5]
 ```
-
-### MathWorks Products (https://www.mathworks.com)
-
-[The MATLAB Phaser setup guide](https://wiki.analog.com/phaser_matlab) lists the MATLAB products required in order to successfully run the files in this repo.
-
-### 3rd Party Products:
-
-[The MATLAB Phaser setup guide](https://wiki.analog.com/phaser_matlab) lists the 3rd party products required in order to successfully run the files in this repo.
 
 ## Getting Started 
 
