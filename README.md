@@ -28,7 +28,7 @@ The following hardware connections are required:
 
 [View from back](backsideconnections.jpg)
 
-So see connected iio devices, run the following command from the command line:
+To see connected iio devices, run the following command from the command line:
 
 ```
 $ iio_info -s
