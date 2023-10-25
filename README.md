@@ -28,6 +28,19 @@ The following hardware connections are required:
 
 [View from back](backsideconnections.jpg)
 
+So see connected iio devices, run the following command from the command line. The output should resemble the example output:
+
+```
+$ iio_info -s
+Library version: 0.24 (git tag: c4498c2)
+Compiled with backends: xml ip usb serial
+Unable to create Local IIO context : Function not implemented (40)
+Available contexts:
+        0: fe80::d20c:d840:92cb:4363%53 (one-bit-adc-dac,adf4159,adar1000_1,ad7291,adar1000_0) [ip:phaser.local]
+        1: 192.168.2.1 (Analog Devices PlutoSDR Rev.C (Z7010-AD9361)), serial=1044734c9605001313000c00984b4f92d0 [ip:pluto.local]
+        2: 0456:b673 (Analog Devices Inc. PlutoSDR (ADALM-PLUTO)), serial=1044734c9605001313000c00984b4f92d0 [usb:1.11.5]
+```
+
 ### MathWorks Products (https://www.mathworks.com)
 
 [The MATLAB Phaser setup guide](https://wiki.analog.com/phaser_matlab) lists the MATLAB products required in order to successfully run the files in this repo.
