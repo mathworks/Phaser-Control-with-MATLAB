@@ -24,9 +24,9 @@ The following hardware connections are required:
 - USB - Micro-USB cable to connect from computer to the ADI Pluto
 - USB - ethernet cable to connect from computer to rasberry pi
 
-![View from front](https://insidelabs-git.mathworks.com/gmencoff/matlab-phaser-board-data-collection/frontsideconnections.jpg?raw=true)
+![View from front](https://insidelabs-git.mathworks.com/gmencoff/matlab-phaser-board-data-collection/blob/[branch]/frontsideconnections.jpg?raw=true)
 
-![View from back](https://insidelabs-git.mathworks.com/gmencoff/matlab-phaser-board-data-collection/backsideconnections.jpg?raw=true)
+![View from back](https://insidelabs-git.mathworks.com/gmencoff/matlab-phaser-board-data-collection/blob/[branch]/backsideconnections.jpg?raw=true)
 
 ### MathWorks Products (https://www.mathworks.com)
 
