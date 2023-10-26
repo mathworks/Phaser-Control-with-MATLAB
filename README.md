@@ -60,6 +60,55 @@ Once the required setup steps have been completed and the Phaser board is hooked
 
 Run this script completely or section by section. Each specific data collection function referenced in "workshopDataCollection.m" contains a detailed description and key setup information.
 
+## Error Conditions
+
+### Could not find file ad9361-wrapper.h
+
+If you see the following error in MATLAB:
+
+```
+Error using loadlibrary
+Could not find file ad9361-wrapper.h.
+```
+
+Run the following commands in MATLAB:
+
+```
+A=adi.utils.libad9361
+A.download_libad9361
+```
+
+### Channel: voltage1 not found
+
+If you see the following error in MATLAB:
+
+```
+Error using matlabshared.libiio.base/cstatus
+Channel: voltage1 not found
+```
+
+It means that the Pluto SDR is only configured for single channel operation.
+
+To fix this issue, SSH into the Pluto using the following command. You may have to change the Pluto IP address:
+
+```
+ssh root@192.168.2.1
+```
+
+When prompted for a password, type "analog".
+
+Once successful, enter the following commands in series to reprogram the Pluto:
+
+```
+fw_setenv attr_name compatible
+fw_setenv attr_val ad9361
+fw_setenv compatible ad9361
+fw_setenv mode 2r2t
+reboot
+```
+
+This should resolve the error condition.
+
 ## License
 
 The license is available in the license.txt file in this GitHub repository.
