@@ -54,8 +54,8 @@ gratingLobes(fc_hb100,finalcalweights);
 
 % Insert a null into the steering pattern. This type of approach can be
 % used for interference cancellation
-nullangle = 25; % Null steering angle
-nullCancellation(fc_hb100,finalcalweights,nullangle);
+nullangle = 20; % Null steering angle
+NullSteeringData = nullCancellation(fc_hb100,finalcalweights,nullangle);
 
 %% Create Monopulse Pattern
 

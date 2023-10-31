@@ -25,8 +25,9 @@ element = phased.IsotropicAntennaElement('FrequencyRange',frange);
 hRange = freq2wavelen(frange);
 spacing = hRange(2)/2;
 subarrayElements = 4;
+nSubarrays = 2;
 subarray = phased.ULA('Element',element,'NumElements',subarrayElements,'ElementSpacing',spacing);
-array = phased.ReplicatedSubarray('Subarray',subarray,'GridSize',[1,2],"SubarraySteering","Custom");
+array = phased.ReplicatedSubarray('Subarray',subarray,'GridSize',[1,nSubarrays],"SubarraySteering","Custom");
 collector = phased.Collector("Sensor",array,"OperatingFrequency",fctransmit,"WeightsInputPort",true);
 
 % CW signal is used
@@ -57,22 +58,22 @@ for steer = steerangle
     % Create the subarray weights.
     singlesubweight = substeervec(fctransmit,steer);
 
+    % Create the full subarray weights
+    subweight = [singlesubweight,singlesubweight] .* analogweight;
+
     % Create the replicated array weights
     repweight = steervec(fctransmit,steer);
 
     % insert a null if a null angle was passed in
     if ~isempty(nullangle)
-        % Null the subarray
-        nullsubweight = substeervec(fctransmit,nullangle);
-        singlesubweight = getNullSteer(singlesubweight,nullsubweight);
+        % get null steering vectors
+        singlesubnull = substeervec(fctransmit,nullangle);
+        repnull = steervec(fctransmit,nullangle);
 
-        % null the replicated array
-        nullrepweight = steervec(fctransmit,nullangle);
-        repweight = getNullSteer(repweight,nullrepweight);
+        % Create weights for null steering
+        subweight = getSubNullSteer(singlesubweight,repweight,singlesubnull,repnull) .* analogweight;
+        repweight = [1;1];  
     end
-
-    % Create the full subarray weights
-    subweight = [singlesubweight,singlesubweight] .* analogweight;
 
     % Receive the signal
     sigreceive = collector(sigtx,[0;0],repweight,subweight) * digitalweight;
@@ -82,7 +83,9 @@ end
 
 end
 
-function nullsteer = getNullSteer(steerweight,nullweight)
-    rn = nullweight'*steerweight/(nullweight'*nullweight);
-    nullsteer = steerweight-nullweight*rn;
+function subnullsteer = getSubNullSteer(substeer,digitalsteer,subnull,digitalnull)
+    fullsteer = substeer .* digitalsteer.';
+    fullnull = subnull .* digitalnull.';
+    rn = sum(diag(fullnull'*fullsteer))/sum(diag((fullnull'*fullnull)));
+    subnullsteer = fullsteer-fullnull.*rn;
 end

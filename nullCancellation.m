@@ -11,12 +11,7 @@ function NullSteeringData = nullCancellation(fc_hb100,CalibrationData,nullangle)
 % Copyright 2023 The MathWorks, Inc.
 
 antennaInteractor = AntennaInteractor(fc_hb100,CalibrationData);
-
-% Capture the initial pattern data
 steerangles = -90:0.5:90;
-patternBeforeData = antennaInteractor.capturePattern(steerangles);
-ampbefore = helperGetAmplitude(patternBeforeData);
-ampbeforedb = mag2db(ampbefore);
 
 % Capture pattern with nulling
 nullPatternData = antennaInteractor.capturePatternWithNull(steerangles,nullangle);
@@ -29,14 +24,13 @@ simdb = mag2db(simpattern);
 
 % Plot the pattern with and without nulling
 ax = axes(figure); hold(ax,"on");
-plot(ax,steerangles,ampbeforedb-max(ampbeforedb),"DisplayName","Collected Without Nulling")
 plot(ax,steerangles,ampafterdb-max(ampafterdb),"DisplayName","Collected With Nulling");
 plot(ax,steerangles,simdb-max(simdb),"DisplayName","Simulated Nulling")
 legend(Location="southeast");
 
 % Save data for later analysis
-NullSteeringData.PatternBeforeNull = patternBeforeData;
-NullSteeringData.InterferenceAzimuth = nullangle;
-NullSteeringData.PatternAfterNull = nullPatternData;
+NullSteeringData.SteerAngles = steerangles;
+NullSteeringData.NullAngle = nullangle;
+NullSteeringData.PatternAfterNull = ampafterdb;
 
 end

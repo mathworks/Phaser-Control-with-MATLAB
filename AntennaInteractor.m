@@ -140,12 +140,9 @@ classdef AntennaInteractor < handle
             defaultAnalogWeights = this.AnalogWeights;
             defaultDigitalWeights = this.DigitalWeights;
             
-            % get analogweights
-            analogweights = this.getWeightsNull(steerangle,nullangle,defaultAnalogWeights,this.SubSteer);
-
-            % get digital weights
+            % get weights
             flippedDigitalWeights = [defaultDigitalWeights(2);defaultDigitalWeights(1)];
-            digitalweights = this.getWeightsNull(steerangle,nullangle,flippedDigitalWeights,this.ArraySteer);
+            [analogweights,digitalweights] = this.getWeightsNull(steerangle,nullangle,defaultAnalogWeights,flippedDigitalWeights);
             digitalweights = [digitalweights(2);digitalweights(1)];
         end
 
@@ -154,12 +151,34 @@ classdef AntennaInteractor < handle
             weights = initialweights .* defaultweights;
         end
 
-        function weights = getWeightsNull(this,steerangle,nullangle,defaultweights,sv)
-            steerweight = sv(this.Fc,steerangle);
-            nullweight = sv(this.Fc,nullangle);
-            rn = nullweight'*steerweight/(nullweight'*nullweight);
-            steernullweight = steerweight-nullweight*rn;
-            weights = steernullweight .* defaultweights;
+        function [analogweights,digitalweights] = getWeightsNull(this,steerangle,nullangle,defaultAnalogWeights,defaultDigitalWeights)
+            % get steer and null weights
+            analogsteerweights = this.SubSteer(this.Fc,steerangle);
+            analognullweights = this.SubSteer(this.Fc,nullangle);
+            digitalsteerweights = this.ArraySteer(this.Fc,steerangle);
+            digitalnullweights = this.ArraySteer(this.Fc,nullangle);
+
+            % insert null using analog steering
+            analogfinalsteerweights = this.getSubNullSteer(analogsteerweights,digitalsteerweights,analognullweights,digitalnullweights);
+            analogweights = analogfinalsteerweights .* defaultAnalogWeights;
+
+            % if the weights are 0 (steer angle == null angle), make
+            % digital weights 0, otherwise use digital weights to adjust
+            % the amplitude, normalize analog weights
+            maxanalog = max(max(abs(analogweights)));
+            if maxanalog == 0
+                digitalweights = [0;0];
+            else
+                analogweights = analogweights / maxanalog;
+                digitalweights = defaultDigitalWeights .* maxanalog;
+            end
+        end
+
+        function subnullsteer = getSubNullSteer(~,substeer,digitalsteer,subnull,digitalnull)
+            fullsteer = substeer .* digitalsteer.';
+            fullnull = subnull .* digitalnull.';
+            rn = sum(diag(fullnull'*fullsteer))/sum(diag((fullnull'*fullnull)));
+            subnullsteer = fullsteer-fullnull.*rn;
         end
 
         function phase = getPhase(~,weights)
