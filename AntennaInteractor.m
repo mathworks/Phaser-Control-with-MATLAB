@@ -5,6 +5,7 @@ classdef AntennaInteractor < handle
     properties
         ArrayControl
         PlutoControl
+        NumSamples
         Model
         Fc
         SubSteer
@@ -20,6 +21,7 @@ classdef AntennaInteractor < handle
             [rx,bf,model] = setupAntenna(fc);
             this.ArrayControl = bf;
             this.PlutoControl = rx;
+            this.NumSamples = rx.SamplesPerFrame;
             this.Model = model;
             this.Fc = fc;
             this.SubSteer = phased.SteeringVector("SensorArray",this.Model.Subarray,'NumPhaseShifterBits',7);
@@ -42,7 +44,7 @@ classdef AntennaInteractor < handle
         end
 
         function [patternData,rxdata] = capturePattern(this,steerangles)
-            patternData = zeros(1024,numel(steerangles));
+            patternData = zeros(this.NumSamples,numel(steerangles));
             for ii = 1 : numel(steerangles)
                 [analogweights,digitalweights] = this.getAllWeights(steerangles(ii));
                 rxdata = this.steerAnalog(analogweights);
@@ -51,8 +53,8 @@ classdef AntennaInteractor < handle
         end
 
         function [sumdiffampdelta,sumdiffphasedelta,sumpatterndata,diffpatternData] = captureMonopulsePattern(this,steerangles)
-            sumpatterndata = zeros(1024,numel(steerangles));
-            diffpatternData = zeros(1024,numel(steerangles));
+            sumpatterndata = zeros(this.NumSamples,numel(steerangles));
+            diffpatternData = zeros(this.NumSamples,numel(steerangles));
             for ii = 1 : numel(steerangles)
                 % capture data
                 [analogweights,digitalweights] = this.getAllWeights(steerangles(ii));
@@ -77,7 +79,7 @@ classdef AntennaInteractor < handle
         end
 
         function patternData = capturePatternWithNull(this,steerangles,nullangle)
-            patternData = zeros(1024,numel(steerangles));
+            patternData = zeros(this.NumSamples,numel(steerangles));
             for ii = 1 : numel(steerangles)
                 [analogweights,digitalweights] = this.getAllWeightsNull(steerangles(ii),nullangle);
                 rxdata = this.steerAnalog(analogweights);
