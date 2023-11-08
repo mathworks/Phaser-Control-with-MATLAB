@@ -26,6 +26,8 @@ CalibrationData = calibrationRoutine(fc_hb100);
 
 % Save the final calibration weights
 calibrationweights = CalibrationData.CalibrationWeights.FinalCalibrationWeights;
-save('CalibrationWeights.mat',"calibrationweights");
+filepath = fileparts(which('generateCalibrationWeights'));
+calweights_filename = [filepath,'\','CalibrationWeights.mat'];
+save(calweights_filename,"calibrationweights");
 
 end

@@ -1,4 +1,24 @@
+% This script demonstrates how to setup the Phaser System as an FMCW radar.
+% 
+% % Setup:
+%
+% Connect the Vivaldi antenna to Phaser SMA Out2. Place the Vivaldi antenna
+% next to the Phaser.
+%
+% Notes:
+%
+% Run this script to generate a range doppler plot, as
+% well as a few plots that illustrate the timing of a pulse repitition
+% interval.
+%
 % Copyright 2023 The MathWorks, Inc.
+
+%% Add entire repository to the path
+
+filepath = fileparts(which('workshopDataCollection'));
+directoryIdxs = find(filepath == '\' | filepath == '/');
+directoryIdx2Add = directoryIdxs(end-1);
+addpath(genpath(filepath(1:directoryIdx2Add)));
 
 %% Clear, close figures, turn off warnings
 clear; close all;

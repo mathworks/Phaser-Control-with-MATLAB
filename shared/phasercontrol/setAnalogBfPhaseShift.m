@@ -1,6 +1,8 @@
 function setAnalogBfPhaseShift(bf,analogWeights)
     phases = getPhaseCodes(analogWeights);
-    bf.RxPhase(:) = phases;
+    if ~isequal(bf.RxPhase,phases)
+        bf.RxPhase(:) = phases;
+    end
 end
 
 function phases = getPhaseCodes(analogWeights)

@@ -1,17 +1,48 @@
+% This script demonstrates how to control the Phaser for beamforming
+% purposes when the system is configured as a radar.
+% 
+% % Setup:
+%
+% Connect the Vivaldi antenna to Phaser SMA Out2. Place the Vivaldi antenna
+% in the field of view of the Phaser and point it at the Phaser.
+%
+% Notes:
+%
+% Run this script to generate a plot of the array factor when the transmit
+% antenna is pointed towards the array. The received signal amplitude is
+% highest when the receive beam is steered towards the transmit antenna.
+%
+% Before performing beamforming, the Phaser analog and digital channels
+% must be calibrated for phase and amplitude errors. 
+%
 % Copyright 2023 The MathWorks, Inc.
 
+%% Add entire repository to the path
+
+filepath = fileparts(which('workshopDataCollection'));
+directoryIdxs = find(filepath == '\' | filepath == '/');
+directoryIdx2Add = directoryIdxs(end-1);
+addpath(genpath(filepath(1:directoryIdx2Add)));
+
 %% Before doing any beamsteering, we need to calculate calibration weights for the antenna.
+
 % Change this value to true if we need to calculate calibration
-% weights.
+% weights. This only needs to be run once. The setup for calibration is
+% different than the rest of the script. The HB100 needs to be placed at
+% boresight for this function to work properly.
+clear;
 needsCalibration = false;
 if needsCalibration
     generateCalibrationWeights();
 end
 
-%% Clear and load calibration weights
+%% Clear workspace and load calibration weights
 
 clear; close all;
-load('CalibrationWeights.mat','calibrationweights');
+
+% This will only work if the generateCalibrationWeights() function has been
+% run in the prior section.
+calibrationweights = loadCalibrationWeights();
 
 %% First, setup the system similarly to fmcwDemo.m
 

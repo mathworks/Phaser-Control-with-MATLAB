@@ -54,6 +54,8 @@ Available contexts:
         2: 0456:b673 (Analog Devices Inc. PlutoSDR (ADALM-PLUTO)), serial=1044734c9605001313000c00984b4f92d0 [usb:1.11.5]
 ```
 
+If not all of these connections are being shown, try unplugging and replugging all USB calbles.
+
 ## Getting Started 
 
 Once the required setup steps have been completed and the Phaser board is hooked up, open the main script, called "workshopDataCollection.m".

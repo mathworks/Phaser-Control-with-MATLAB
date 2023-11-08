@@ -1,16 +1,32 @@
-%% Workshop data collection
+%% Phaser as a receiver
 
+% This script demonstrates how to control the Phaser when the system is
+% configured only as a receiver. This is the script that was used for IMS
+% 2023 as well as the following example in Phase Array System Toolbox - 
+% https://www.mathworks.com/help/phased/ug/hardware-array-data-collection-and-simulation.html
+% 
+% % Setup:
+%
+% Most of these demonstrations require the HB100 to be placed at 0 degrees
+% boresight. However, each of the functions in this data collection script
+% have detailed decriptions and information about setup within the files.
+%
+%
 % Copyright 2023 The MathWorks, Inc.
 
-% Each of the functions in this data collection script has detailed
-% decriptions and information about setup within the files
+%% Add entire repository to the path
+
+filepath = fileparts(which('workshopDataCollection'));
+directoryIdxs = find(filepath == '\' | filepath == '/');
+directoryIdx2Add = directoryIdxs(end-1);
+addpath(genpath(filepath(1:directoryIdx2Add)));
 
 %% Disable warnings
 
 % Turn off obsolete system object warning
 warning('off','MATLAB:system:ObsoleteSystemObjectMixin')
 
-%% Calculate the transmitter frequency
+%% Calculate the HB100 transmitter frequency
 
 % Run this function to measure the frequency of the HB100 transmitter. If
 % you already know the frequency, just set the fc_hb100 variable to the
@@ -18,6 +34,7 @@ warning('off','MATLAB:system:ObsoleteSystemObjectMixin')
 fc_hb100 = findTxFrequency();
 
 %% Measure and save antenna gain profile
+
 % Run this function to measure the gain profile for each element in the
 % array. This creates a map from element gain setting to actual measured
 % power. This function only needs to be run a single time for one Phaser
@@ -31,15 +48,14 @@ saveGainProfile(fc_hb100);
 CalibrationData = calibrationRoutine(fc_hb100);
 
 % The calibration weights to be used for the remainder of the data
-% collection exercises are extracted from CalibrationData.
+% collection exercises are extracted from CalibrationData. The calibration
+% weights measured for a single Phaser Board can be saved and retrieved
+% during a later session.
 finalcalweights = CalibrationData.CalibrationWeights.FinalCalibrationWeights;
-
-% The calibration weights measured for a single Phaser board can be saved
-% and retrieved during a later session.
 
 %% Tapering
 
-% Taber the antenna pattern to reduce the sidelobe levels.
+% Taper the antenna pattern to reduce the sidelobe levels.
 nbar = 2; % Number of constant level sidelobes
 sll = -20; % Desired sidelobe level
 antennaTapering(fc_hb100,finalcalweights,nbar,sll);

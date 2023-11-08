@@ -1,6 +1,7 @@
 function outdata = arrangePulseData(indata,rx,bf,bf_TDD)
-% Rearrange a full stream of data into an nSample x nPulse data matrix for
-% easier processing.
+% Rearrange a full stream of data into an nSample x nPulse data matrix.
+%
+% Copyright 2023 The MathWorks, Inc.
 
 % Extract timing from pluto and phaser setup
 fs = rx.SamplingRate;
