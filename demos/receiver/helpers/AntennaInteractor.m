@@ -5,12 +5,12 @@ classdef AntennaInteractor < handle
     properties
         ArrayControl
         PlutoControl
+        NumSamples
         Model
         Fc
         SubSteer
         ArraySteer
-        LastPhase
-        LastGain
+        LastAnalogWeight
         AnalogWeights
         DigitalWeights
     end
@@ -20,6 +20,7 @@ classdef AntennaInteractor < handle
             [rx,bf,model] = setupAntenna(fc);
             this.ArrayControl = bf;
             this.PlutoControl = rx;
+            this.NumSamples = rx.SamplesPerFrame;
             this.Model = model;
             this.Fc = fc;
             this.SubSteer = phased.SteeringVector("SensorArray",this.Model.Subarray,'NumPhaseShifterBits',7);
@@ -42,7 +43,7 @@ classdef AntennaInteractor < handle
         end
 
         function [patternData,rxdata] = capturePattern(this,steerangles)
-            patternData = zeros(1024,numel(steerangles));
+            patternData = zeros(this.NumSamples,numel(steerangles));
             for ii = 1 : numel(steerangles)
                 [analogweights,digitalweights] = this.getAllWeights(steerangles(ii));
                 rxdata = this.steerAnalog(analogweights);
@@ -51,8 +52,8 @@ classdef AntennaInteractor < handle
         end
 
         function [sumdiffampdelta,sumdiffphasedelta,sumpatterndata,diffpatternData] = captureMonopulsePattern(this,steerangles)
-            sumpatterndata = zeros(1024,numel(steerangles));
-            diffpatternData = zeros(1024,numel(steerangles));
+            sumpatterndata = zeros(this.NumSamples,numel(steerangles));
+            diffpatternData = zeros(this.NumSamples,numel(steerangles));
             for ii = 1 : numel(steerangles)
                 % capture data
                 [analogweights,digitalweights] = this.getAllWeights(steerangles(ii));
@@ -77,7 +78,7 @@ classdef AntennaInteractor < handle
         end
 
         function patternData = capturePatternWithNull(this,steerangles,nullangle)
-            patternData = zeros(1024,numel(steerangles));
+            patternData = zeros(this.NumSamples,numel(steerangles));
             for ii = 1 : numel(steerangles)
                 [analogweights,digitalweights] = this.getAllWeightsNull(steerangles(ii),nullangle);
                 rxdata = this.steerAnalog(analogweights);
@@ -86,22 +87,20 @@ classdef AntennaInteractor < handle
         end
 
         function rxdata = steerAnalog(this,analogWeights)
-            % Set analog phase shifter
-            phases = this.getPhaseCodes(analogWeights);
-            if ~isequal(this.LastPhase,phases)
-                this.ArrayControl.RxPhase(:) = phases;
-                this.LastPhase = phases;
+            % If the analog weights have changed, change beamformer
+            % settings
+            if isequal(this.LastAnalogWeight,analogWeights)
+                % receive data
+                this.PlutoControl();
+                rxdata = this.PlutoControl();
+                return
             end
-        
-            % Set analog gain
-            gainCode = this.getGainCodes(analogWeights);
-            if ~isequal(this.LastGain,gainCode)
-                this.ArrayControl.RxGain(:) = gainCode;
-                this.LastGain = gainCode;
-            end
+
+            % Setup beamformer weights
+            setAnalogBfWeights(this.ArrayControl,analogWeights);
+            this.LastAnalogWeight = analogWeights;
         
             % receive data
-            this.ArrayControl.LatchRxSettings();
             this.PlutoControl();
             rxdata = this.PlutoControl();
         end
@@ -126,14 +125,13 @@ classdef AntennaInteractor < handle
             defaultAnalogWeights = this.AnalogWeights;
             defaultDigitalWeights = this.DigitalWeights;
 
-            % get analog weights
-            analogweights = this.getWeights(steerangle,defaultAnalogWeights,this.SubSteer);
+            % get steering weights
+            analogweights = this.SubSteer(this.Fc,steerangle);
+            digitalweights = this.ArraySteer(this.Fc,steerangle);
 
-            % get digital weights, flip to ensure they are being applied to
-            % the correct channel.
-            flippedDigitalWeights = [defaultDigitalWeights(2);defaultDigitalWeights(1)];
-            digitalweights = this.getWeights(steerangle,flippedDigitalWeights,this.ArraySteer);
-            digitalweights = [digitalweights(2);digitalweights(1)];
+            % Apply calibration weights
+            analogweights = analogWeightsCalAdjustment(analogweights,defaultAnalogWeights);
+            digitalweights = digitalWeightsCalAdjustment(digitalweights,defaultDigitalWeights);
         end
 
         function [analogweights,digitalweights] = getAllWeightsNull(this,steerangle,nullangle)
@@ -144,11 +142,6 @@ classdef AntennaInteractor < handle
             flippedDigitalWeights = [defaultDigitalWeights(2);defaultDigitalWeights(1)];
             [analogweights,digitalweights] = this.getWeightsNull(steerangle,nullangle,defaultAnalogWeights,flippedDigitalWeights);
             digitalweights = [digitalweights(2);digitalweights(1)];
-        end
-
-        function weights = getWeights(this,steerangle,defaultweights,sv)
-            initialweights = sv(this.Fc,steerangle);
-            weights = initialweights .* defaultweights;
         end
 
         function [analogweights,digitalweights] = getWeightsNull(this,steerangle,nullangle,defaultAnalogWeights,defaultDigitalWeights)
