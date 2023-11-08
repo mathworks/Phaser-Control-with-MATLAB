@@ -51,6 +51,12 @@ function CalibrationData = calibrationRoutine(fc_hb100)
 % Setup antenna and model
 [rx,bf,~] = setupAntenna(fc_hb100);
 
+% Setup sampling properties
+fs = 3e6;
+nSamples = 1024;
+rx.SamplingRate = fs;
+rx.SamplesPerFrame = nSamples;
+
 % Setup calibration data storage object
 CalibrationData = CalibrationDataFormat();
 
@@ -75,8 +81,8 @@ bf.RxGain(:) = 127;
 
 % Setup data variables
 nCapture = 20;
-rx1data = zeros(1024,nCapture,4);
-rx2data = zeros(1024,nCapture,4);
+rx1data = zeros(nSamples,nCapture,4);
+rx2data = zeros(nSamples,nCapture,4);
 
 for nCh = 1:4
     % Turn off all the channels.
@@ -229,8 +235,8 @@ bf.RxPhase(:) = [phaseshifts(:,1)',phaseshifts(:,2)'];
 
 % Setup data variables
 nCapture = 20;
-rx1data = zeros(1024,nCapture,4);
-rx2data = zeros(1024,nCapture,4);
+rx1data = zeros(nSamples,nCapture,4);
+rx2data = zeros(nSamples,nCapture,4);
 
 for nCh = 1:4
     % Turn off all the channels.

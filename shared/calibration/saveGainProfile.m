@@ -63,7 +63,8 @@ plotGainCodes(ax,1,gaincode,subArray1_NormalizedGainProfile);
 ax = nexttile();
 plotGainCodes(ax,2,gaincode,subArray2_NormalizedGainProfile);
 
-gainProfile_filename = 'GainProfile.mat';
+filepath = fileparts(which('saveGainProfile'));
+gainProfile_filename = [filepath,'\','GainProfile.mat'];
 save(gainProfile_filename,"subArray1_NormalizedGainProfile","subArray2_NormalizedGainProfile","gaincode");
     
 function plotGainCodes(ax,array,codes,profile)
