@@ -76,8 +76,8 @@ monopulseFollower(fc_hb100,finalcalweights,runtime);
 
 % This will scan to the specified angles for the specified number of scans.
 % Change showsubarrays to show or hide subarray patterns.
-scanangles = -90:90; % Scan angles
-nscans = 2; % Number of scans
+scanangles = -90:0.5:90; % Scan angles
+nscans = 1; % Number of scans
 showsubarrays = true; % Toggle whether to show subarray patterns
 scanAntenna(fc_hb100,finalcalweights,scanangles,nscans,showsubarrays);
 

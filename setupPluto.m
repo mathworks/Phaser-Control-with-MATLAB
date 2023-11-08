@@ -11,6 +11,7 @@ rx.GainControlModeChannel1 = 'manual';
 rx.GainChannel0 = 6;
 rx.GainChannel1 = 6;
 rx.SamplingRate = 30e6;
+rx.SamplesPerFrame = 1024;
 
 tx = adi.AD9361.Tx('uri', plutoURI);
 tx.EnabledChannels = [1,2];

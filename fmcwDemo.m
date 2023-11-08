@@ -21,7 +21,7 @@ fmaxdop = speed2dop(2*maxSpeed,lambda); % Maximum doppler shift depends on max s
 prf = 2*fmaxdop; % PRF needs to be set to unambiguously resolve max speed
 nPulses = ceil(2*maxSpeed/speedResolution); % Number of pulses set to for speed resolution
 tpulse = ceil((1/prf)*1e3)*1e-3; % Pulse time, round up to the nearest ms
-tsweep = getSweepTime(tpulse,tpulse); % Sweep across as much of the pulse as possible
+tsweep = getFMCWSweepTime(tpulse,tpulse); % Sweep across as much of the pulse as possible
 sweepslope = rampbandwidth / tsweep; % Slope of the FMCW sweep
 fmaxbeat = sweepslope * range2time(maxRange); % Max beat frequency in this case we only consider the f offset due to range delay. With faster targets, you need to consider doppler
 fs = max(ceil(2*fmaxbeat),520834); % Set sample rate based on the maximum beat frequency or the minimum rate of the pluto.
@@ -46,16 +46,10 @@ tx.AttenuationChannel1 = -3;
 tx.EnableCyclicBuffers = true;
 tx.DataSource = "DMA";
 
-% Create a sine wave to transmit, this will offset the output waveform from
-% the center frequency to avoid issues with DC removal
-amp = 0.9*2^15; % Max amplitude of the signal
-% foffset = 0.1e6; % Sin wave offsets the carrier frequency by a small portion of the sampling rate
-% phase = 0; % No phase offset
-% sw = dsp.SineWave(amp,foffset,phase,ComplexOutput=true,SampleRate=fs,SamplesPerFrame=nSamples);
-% singleWaveform = sw();
-% txWaveform = [singleWaveform singleWaveform];
+% This is where you could create some modulation scheme, we just use a
+% constant amplitude baseband signal.
+amp = 0.9 * 2^15;
 txWaveform = amp*ones(nSamples,2);
-tx(txWaveform);
 
 %% Setup the Phaser
 
@@ -113,12 +107,7 @@ data = rx();
 plotDataTiming(data,fs,tStartRamp,tsweep,tpulse);
 
 % Remove excess data, rearrange into nSamples x nPulses
-data = arrangeData(data,fs,tStartRamp,tsweep,tpulse);
-
-% Demodulate the data
-
-% Remove the frequency offset that was added to the data
-%data = removeFreqShift(data,fs,foffset);
+data = arrangePulseData(data,rx,bf,bf_TDD);
 
 % Create a range doppler plot
 rd = phased.RangeDopplerResponse(DopplerOutput="Speed",...
@@ -130,25 +119,6 @@ ax = gca;
 xlim(ax,[-maxSpeed,maxSpeed]); ylim(ax,[0,maxRange]);
 
 %% Helpers
-
-function tsweep = getSweepTime(tdesired,tmax)
-% This function takes tdesired (s) and tmax(s) and outputs tsweep (s) which
-% contains a sweep time that is acceptable for the PLL. PLL sweep times
-% must be in whole 2^p us. We try to round up, if this exceeds tmax we
-% round down.
-
-tdesiredus = tdesired*1e6;
-tmaxus = tmax*1e6;
-desiredpower2 = nextpow2(tdesiredus);
-tdesiredusrounded = 2^desiredpower2;
-
-if tdesiredusrounded > tmaxus
-    tdesiredusrounded = 2^(desiredpower2-1);
-end
-
-tsweep = tdesiredusrounded / 1e6;
-
-end
 
 function plotDataTiming(data,fs,tStartRamp,tSweep,tPulse)
 
@@ -165,25 +135,17 @@ function plotSinglePulseTiming(data,fs,tStartRamp,tSweep,tPulse)
     minData = min(firstPulseReal);
     maxData = max(firstPulseReal);
 
-    % Get the start and end of data collection based on the ramp start time
-    % and sweep time
-    [tStartData,tEndData] = getDataStopStartTime(tStartRamp,tSweep);
-
     % Convert to ms
     scalefactor = 1e3;
     pulseTimes = pulseTimes * scalefactor;
     tStartRamp = tStartRamp * scalefactor;
     tSweep = tSweep * scalefactor;
     tPulse = tPulse * scalefactor;
-    tStartData = tStartData * scalefactor;
-    tEndData = tEndData * scalefactor;
     
     ax1 = axes(figure); hold(ax1,"on"); title(ax1,"Timing for a single pulse");
     plot(ax1,pulseTimes,firstPulseReal,DisplayName="Collected Data");
     plot(ax1,[tStartRamp,tStartRamp],[minData,maxData],DisplayName="Start Frequency Ramp",LineStyle="--");
-    %plot(ax1,[tStartData,tStartData],[minData,maxData],DisplayName="Start Data Collection",LineStyle="--");
     plot(ax1,[tSweep,tSweep],[minData,maxData],DisplayName="End Frequency Ramp",LineStyle="--");
-    %plot(ax1,[tEndData,tEndData],[minData,maxData],DisplayName="End Data Collection",LineStyle="--");
     plot(ax1,[tPulse,tPulse],[minData,maxData],DisplayName="End Burst Frame",LineStyle="--");
     xlim(ax1,[0-tPulse/10 tPulse+tPulse/10]); xlabel(ax1,"Time (ms)"); legend(ax1,Visible="on");
     hold(ax1,"off");
@@ -225,44 +187,6 @@ end
 function tEnd = getEndTime(data,fs)
     nSamples = size(data,1);
     tEnd = nSamples/fs;
-end
-
-function outdata = arrangeData(indata,fs,tstartsweep,tsweep,tpulse)
-
-nPulses = getPulseNum(indata,fs,tpulse); % get the number of pulses in the data set
-sweepoffsetsamples = ceil(tstartsweep * fs); % get the number of samples into the pulse that the sweep starts
-sweepsamples = 1:ceil(tsweep * fs) + sweepoffsetsamples; % got indices within a pulse that contain the sweep data
-pulseendsample = ceil(tpulse * fs); % get end index of pulse
-pulsestartsamples = (0:nPulses-1)*pulseendsample;
-allsweepsamples = repmat(sweepsamples',1,nPulses);
-sampleidxs = allsweepsamples + pulsestartsamples;
-outdata = indata(sampleidxs);
-
-end
-
-function outdata = removeFreqShift(indata,fs,foffset)
-
-% get number of samples to shift
-nSamples = size(indata,1);
-nShift = ceil(nSamples/fs*foffset);
-
-% get signal in freq domain, shift, output
-fInput = fft(indata,[],1);
-fInputShift = circshift(fInput,-nShift,1);
-outdata = ifft(fInputShift,[],1);
-
-end
-
-function [tStart,tStop] = getDataStopStartTime(tStartRamp,tSweep)
-% Throw out some data on either end of the frequency ramp to avoid
-% nonlinear ramp regions
-
-startOffsetPercent = 0;
-endOffsetPercent = 0;
-
-tStart = tStartRamp + tSweep * startOffsetPercent;
-tStop = tStartRamp + tSweep - tSweep * endOffsetPercent;
-
 end
 
 

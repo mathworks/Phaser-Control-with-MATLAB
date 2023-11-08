@@ -1,10 +1,10 @@
-function bf = setupPhaser(rx,phaserURI,fc_hb100)
+function bf = setupPhaser(rx,phaserURI,fc)
 %% Configure phaser
 bf = adi.Phaser;
 bf.uri = phaserURI;
 bf.SkipInit = true; % Bypass writing all initial attributes to speed things up
 bf();
-bf.ElementSpacing = 0.014;
+bf.ElementSpacing = physconst('LightSpeed') /fc/2; % half lambda spacing
 % Put device in Rx mode
 bf.TxRxSwitchControl = {'spi','spi'};
 bf.Mode(:) = {'Disabled'};
@@ -28,7 +28,7 @@ bf.RxPowerDown(:) = false;
 bf.Mode(:) = {'Rx'};
 
 %% Set up PLL
-bf.Frequency = (fc_hb100 + rx.CenterFrequency) / 4;
+bf.Frequency = (fc + rx.CenterFrequency) / 4;
 BW = 500e6 / 4; num_steps = 500;
 bf.FrequencyDeviationRange = BW; % frequency deviation range in H1.  This is the total freq deviation of the complete freq ramp
 bf.FrequencyDeviationStep = int64(BW / num_steps);  % frequency deviation step in Hz.  This is fDEV, in Hz.  Can be positive or negative
