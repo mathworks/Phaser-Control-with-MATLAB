@@ -31,10 +31,13 @@ The following hardware connections are required:
 - USB-C Power cable to insert into the antenna board
 - USB - Micro-USB cable to connect from computer to the ADI Pluto
 - USB - ethernet cable to connect from computer to rasberry pi
+- Vivaldi Antenna - SMA Out 1 or Out 2 (optional, if using transmit)
 
 [View from front](frontsideconnections.jpg)
 
 [View from back](backsideconnections.jpg)
+
+[Transmitter connection](transmitterconnections.jpg)
 
 To see connected iio devices, run the following command from the command line:
 
@@ -58,9 +61,13 @@ If not all of these connections are being shown, try unplugging and replugging a
 
 ## Getting Started 
 
-Once the required setup steps have been completed and the Phaser board is hooked up, open the main script, called "workshopDataCollection.m".
+Once the required setup steps have been completed and the Phaser board is hooked up, try running the demo scripts included in this repository to get started with the Phaser board. These scripts can be found in the demos/ directory.
 
-Run this script completely or section by section. Each specific data collection function referenced in "workshopDataCollection.m" contains a detailed description and key setup information.
+The script called "workshopDataCollection.m" in the demos/receiver/ directory demonstrates some capabilities of the Phaser operating purely as a receiver, with the HB100 acting as a transmitter.
+
+The scripts within the demos/radar/ directory demonstrate how to get the Phaser operating as a radar and some simple receive beamsteering in this configuration.
+
+There is a function in the shared/calibration/ directory that will generate and save the calibration weights for your Phaser board. This function is called as part of the demo scripts, but it can also be run independently to explore how we are calibrating the Phaser elements.
 
 ## Error Conditions
 
