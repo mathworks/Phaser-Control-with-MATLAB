@@ -16,13 +16,13 @@ The files demonstrating using Phaser as a receiver form the basis for a presenta
 
 ### Phaser as a Radar
 
-A second set of demonstration files shows how to collect data using the Phaser as an FMCW radar, transmitting and receiving data synchronously. These demos show you how to get up and running using the Phaser as a radar as well as how to do some simple beamforming when the Phaser is configured as a radar.
+A second set of demonstration files shows how to collect data using the Phaser as an FMCW radar, transmitting and receiving data synchronously. These demos show you how to get up and running using the Phaser as a radar as well as how to do some simple receive beamforming when the Phaser is configured as a radar.
 
 ## Setup
 
-[The MATLAB Phaser setup guide](https://wiki.analog.com/phaser_matlab) explains the required setup steps in detail. Follow the instructions on this page to setup MATLAB and the Phaser. Follow these instructions up to the portion titled "Running the labs".
+[The MATLAB Phaser setup guide](https://wiki.analog.com/phaser_matlab) explains the required setup steps in detail. Follow the instructions on this page to setup MATLAB and the Phaser.
 
-For the scripts in this repository to run successfully, MATLAB must be configured properly, and the Phaser must be connected. A single tone X-Band frequency source such as the HB100 should be placed at the Phaser broadside angle.
+For the scripts in this repository to run successfully, MATLAB must be configured properly, and the Phaser must be connected. There may be additional setup steps in the comments of the scripts that you are running.
 
 ### MathWorks Products (https://www.mathworks.com)
 
