@@ -1,6 +1,6 @@
 # MATLAB Phaser Board Data Collection
 
-This repo contains the MATLAB&reg; files used during a presentation given at the 2023 International Microwave Symposium (IMS). These files demonstrate how to use MATLAB to control the Analog Devices&copy; (ADI) Phaser Board and compares collected data to simulated data in various data collection scenarios. MATLAB Phased Array System Toolbox&trade; (PST) is utilized to simulate the data received by the ADI Phaser Board.
+This repo contains the MATLAB&reg; files used during a presentation given at the 2023 International Microwave Symposium (IMS). These files demonstrate how to use MATLAB to control the Analog Devices&copy; (ADI) Phaser Board and compares collected data to simulated data in various data collection scenarios. MATLAB Phased Array System Toolbox&trade; is utilized to simulate the data received by the ADI Phaser Board.
 
 These files demonstrate a simple calibration routine to ensure expected functionality of the Phaser board. Once calibrated, the following phased array techniques are demonstrated:
 - Antenna tapering to reduce pattern sidelobes
@@ -8,7 +8,7 @@ These files demonstrate a simple calibration routine to ensure expected function
 - Null steering for interference cancellation
 - Monopulse for angle estimation
 
-These files also allow users to collect data from a MATLAB PST example that was based on the work presented at the IMS 2023 workshop.
+These files also allow you to collect data from a MATLAB Phased Array System Toolbox example that was based on the work presented at the IMS 2023 workshop.
 
 ## Setup
 
@@ -59,17 +59,16 @@ Available contexts:
 
 If not all of these connections are being shown, try unplugging and replugging all USB calbles.
 
-## Getting Started 
+## Getting Started
 
-Once the required setup steps have been completed and the Phaser board is hooked up, try running the demo scripts included in this repository to get started with the Phaser board. These scripts can be found in the demos/ directory.
+This repository contains demonstration scripts for using MATLAB to control and collect data from the Phaser board. Demo scripts can be found under the demos/ directory. Try running any of these demo scripts to get up and running.
 
-The script called "workshopDataCollection.m" in the demos/receiver/ directory demonstrates some capabilities of the Phaser operating purely as a receiver, with the HB100 acting as a transmitter.
+- The scripts in demos/radar/ are run with the Phaser configured as a transmitter and receiver. The files under demos/radar/helpers/ are used in the main scripts to assist with control, data collection, or visualization.
+- The scripts in demos/receiver/ are run with the Phaser configured as a receiver only and the HB100 operating as a transmitter. The files under demos/receiver/helpers/ are used in the main scripts to assist with control, data collection, or visualization.
+- The files found in shared/calibration/ are used to help calibrate the phase and amplitude of each element and digital channel in the Phaser and are relevant whether operting the radar or receiver scripts. Calibration must be performed to successfully beamform using the Phaser. There is a function in this directory called generateCalibrationWeights that will generate and save the calibration weights for your Phaser board. This function is called as part of the demo scripts, but it can also be run independently to explore how we are calibrating the Phaser elements.
+- The files found in shared/phasercontrol/ are used throughout the demo and calibration scripts and are used to help control and collect data from the Phaser.
 
-The scripts within the demos/radar/ directory demonstrate how to get the Phaser operating as a radar and some simple receive beamsteering in this configuration.
-
-There is a function in the shared/calibration/ directory that will generate and save the calibration weights for your Phaser board. This function is called as part of the demo scripts, but it can also be run independently to explore how we are calibrating the Phaser elements.
-
-## Error Conditions
+## Troubleshooting
 
 ### Could not find file ad9361-wrapper.h
 
