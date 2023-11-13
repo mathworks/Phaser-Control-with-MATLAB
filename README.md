@@ -1,6 +1,10 @@
 # MATLAB Phaser Board Data Collection
 
-This repo contains the MATLAB&reg; files used during a presentation given at the 2023 International Microwave Symposium (IMS). These files demonstrate how to use MATLAB to control the Analog Devices&copy; (ADI) Phaser Board and compares collected data to simulated data in various data collection scenarios. MATLAB Phased Array System Toolbox&trade; is utilized to simulate the data received by the ADI Phaser Board.
+This repository contains files that demonstrate how to use MATLAB&reg; to control the Analog Devices&copy; (ADI) Phaser Board.
+
+### Phaser as a Receiver
+
+One set of demonstration files shows how to collect data using the Phaser as a receiver with the HB100 being used as a single tone transmitter. These demonstrations use the MATLAB Phased Array System Toolbox&trade; to generate beamforming weights and compare real received data to simulated received.
 
 These files demonstrate a simple calibration routine to ensure expected functionality of the Phaser board. Once calibrated, the following phased array techniques are demonstrated:
 - Antenna tapering to reduce pattern sidelobes
@@ -8,7 +12,11 @@ These files demonstrate a simple calibration routine to ensure expected function
 - Null steering for interference cancellation
 - Monopulse for angle estimation
 
-These files also allow you to collect data from a MATLAB Phased Array System Toolbox example that was based on the work presented at the IMS 2023 workshop.
+The files demonstrating using Phaser as a receiver form the basis for a presentation given at the 2023 International Microwave Symposium (IMS) titled "Phased Array System Modeling and Design using MATLAB and Analog Devices Hardware". These files are also used to collect data for a MATLAB documentation example called [Hardware Array Data Collection and Simulation](https://www.mathworks.com/help/phased/ug/hardware-array-data-collection-and-simulation.html).
+
+### Phaser as a Radar
+
+A second set of demonstration files shows how to collect data using the Phaser as an FMCW radar, transmitting and receiving data synchronously. These demos show you how to get up and running using the Phaser as a radar as well as how to do some simple beamforming when the Phaser is configured as a radar.
 
 ## Setup
 

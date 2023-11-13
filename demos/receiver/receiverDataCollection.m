@@ -1,16 +1,13 @@
 %% Phaser as a receiver
 
 % This script demonstrates how to control the Phaser when the system is
-% configured only as a receiver. This is the script that was used for IMS
-% 2023 as well as the following example in Phase Array System Toolbox - 
-% https://www.mathworks.com/help/phased/ug/hardware-array-data-collection-and-simulation.html
+% configured only as a receiver.
 % 
 % % Setup:
 %
 % Most of these demonstrations require the HB100 to be placed at 0 degrees
 % boresight. However, each of the functions in this data collection script
 % have detailed decriptions and information about setup within the files.
-%
 %
 % Copyright 2023 The MathWorks, Inc.
 
