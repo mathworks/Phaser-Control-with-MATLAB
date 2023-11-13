@@ -4,7 +4,7 @@ This repository contains files that demonstrate how to use MATLAB&reg; to contro
 
 ### Phaser as a Receiver
 
-One set of demonstration files shows how to collect data using the Phaser as a receiver with the HB100 being used as a single tone transmitter. These demonstrations use the MATLAB Phased Array System Toolbox&trade; to generate beamforming weights and compare real received data to simulated received.
+One set of demonstration files shows how to collect data using the Phaser as a receiver with the HB100 being used as a single tone transmitter. These demonstrations use the MATLAB Phased Array System Toolbox&trade; to generate beamforming weights and compare real received data to simulated received data.
 
 These files demonstrate a simple calibration routine to ensure expected functionality of the Phaser board. Once calibrated, the following phased array techniques are demonstrated:
 - Antenna tapering to reduce pattern sidelobes
@@ -22,7 +22,7 @@ A second set of demonstration files shows how to collect data using the Phaser a
 
 [The MATLAB Phaser setup guide](https://wiki.analog.com/phaser_matlab) explains the required setup steps in detail. Follow the instructions on this page to setup MATLAB and the Phaser. Follow these instructions up to the portion titled "Running the labs".
 
-For the scripts in this repository to run successfully, MATLAB must be configured properly and the Phaser must be connected. A single tone X-Band frequency source such as the HB100 should be placed at the Phaser broadside angle.
+For the scripts in this repository to run successfully, MATLAB must be configured properly, and the Phaser must be connected. A single tone X-Band frequency source such as the HB100 should be placed at the Phaser broadside angle.
 
 ### MathWorks Products (https://www.mathworks.com)
 
@@ -38,7 +38,7 @@ The following hardware connections are required:
 
 - USB-C Power cable to insert into the antenna board
 - USB - Micro-USB cable to connect from computer to the ADI Pluto
-- USB - ethernet cable to connect from computer to rasberry pi
+- USB - ethernet cable to connect from computer to Raspberry Pi
 - Vivaldi Antenna - SMA Out 1 or Out 2 (optional, if using transmit)
 
 [View from front](frontsideconnections.jpg)
@@ -65,7 +65,7 @@ Available contexts:
         2: 0456:b673 (Analog Devices Inc. PlutoSDR (ADALM-PLUTO)), serial=1044734c9605001313000c00984b4f92d0 [usb:1.11.5]
 ```
 
-If not all of these connections are being shown, try unplugging and replugging all USB calbles.
+If not all of these connections are being shown, try unplugging and plugging in all USB cables.
 
 ## Getting Started
 
@@ -73,7 +73,7 @@ This repository contains demonstration scripts for using MATLAB to control and c
 
 - The scripts in [demos/radar/](demos/radar/) are run with the Phaser configured as a transmitter and receiver. The files under [demos/radar/helpers/](demos/radar/helpers/) are used in the main scripts to assist with control, data collection, or visualization.
 - The scripts in [demos/receiver/](demos/receiver/) are run with the Phaser configured as a receiver only and the HB100 operating as a transmitter. The files under [demos/receiver/helpers/](demos/receiver/helpers/) are used in the main scripts to assist with control, data collection, or visualization.
-- The files found in [shared/calibration/](shared/calibration/) are used to help calibrate the phase and amplitude of each element and digital channel in the Phaser and are relevant whether operting the radar or receiver scripts. Calibration must be performed to successfully beamform using the Phaser.
+- The files found in [shared/calibration/](shared/calibration/) are used to help calibrate the phase and amplitude of each element and digital channel in the Phaser and are relevant whether operating the radar or receiver scripts. Calibration must be performed to successfully beamform using the Phaser.
     - There is a function in this directory called [generateCalibrationWeights](shared/calibration/generateCalibrationWeights) that will generate and save the calibration weights for your Phaser board. This function is called as part of the demo scripts, but it can also be run independently to explore how we are calibrating the Phaser elements.
 - The files found in [shared/phasercontrol/](shared/phasercontrol/) are used throughout the demo and calibration scripts and are used to help control and collect data from the Phaser.
 
