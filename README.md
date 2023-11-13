@@ -63,7 +63,7 @@ If not all of these connections are being shown, try unplugging and replugging a
 
 This repository contains demonstration scripts for using MATLAB to control and collect data from the Phaser board. Demo scripts can be found under the demos/ directory. Try running any of these demo scripts to get up and running.
 
-- The scripts in demos/radar/ are run with the Phaser configured as a transmitter and receiver. The files under demos/radar/helpers/ are used in the main scripts to assist with control, data collection, or visualization.
+- The scripts in [demos/radar/](demos/radar/) are run with the Phaser configured as a transmitter and receiver. The files under demos/radar/helpers/ are used in the main scripts to assist with control, data collection, or visualization.
 - The scripts in demos/receiver/ are run with the Phaser configured as a receiver only and the HB100 operating as a transmitter. The files under demos/receiver/helpers/ are used in the main scripts to assist with control, data collection, or visualization.
 - The files found in shared/calibration/ are used to help calibrate the phase and amplitude of each element and digital channel in the Phaser and are relevant whether operting the radar or receiver scripts. Calibration must be performed to successfully beamform using the Phaser. There is a function in this directory called generateCalibrationWeights that will generate and save the calibration weights for your Phaser board. This function is called as part of the demo scripts, but it can also be run independently to explore how we are calibrating the Phaser elements.
 - The files found in shared/phasercontrol/ are used throughout the demo and calibration scripts and are used to help control and collect data from the Phaser.
