@@ -1,18 +1,19 @@
-function [rx,bf,phaserModel,tx,plutoURI,phaserURI] = setupAntenna(fc)
+function [rx,bf,phaserModel,tx,bf_TDD] = setupAntenna(fc)
     % Setup the Pluto, Phaser, and Phaser Model.
 
     % Copyright 2023 The MathWorks, Inc.
     
     % Setup the pluto
-    plutoURI = 'ip:pluto.local';
-    [rx,tx] = setupPluto(plutoURI);
+    [rx,tx] = setupPluto();
 
     % Setup the phaser
-    phaserURI = 'ip:phaser.local';
-    bf = setupPhaser(rx,phaserURI,fc);
+    bf = setupPhaser(rx,fc);
     bf.RxPowerDown(:) = 0;
-    bf.RxGain(:) = 127; %?
+    bf.RxGain(:) = 127;
     bf.EnablePLL = true;
+
+    % Setup the tdd engine
+    bf_TDD = setupTddEngine();
     
     % Create the model of the phaser    
     nElements = 4;

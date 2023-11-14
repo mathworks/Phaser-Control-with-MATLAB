@@ -50,8 +50,7 @@ nSamples = ceil(tpulse * nPulses * fs); % Get the total number of samples in a P
 %% Setup pluto
 
 % Setup the pluto
-plutoURI = 'ip:192.168.2.1';
-[rx,tx] = setupPluto(plutoURI);
+[rx,tx] = setupPluto();
 
 % Setup receiver
 rx.SamplesPerFrame = nSamples;
@@ -74,8 +73,7 @@ txWaveform = amp*ones(nSamples,2);
 %% Setup the Phaser
 
 % Beamformers
-phaserURI = 'ip:phaser.local';
-bf = setupPhaser(rx,phaserURI,fc);
+bf = setupPhaser(rx,fc);
 bf.RxPowerDown(:) = 0;
 bf.RxGain(:) = 127;
 
@@ -94,10 +92,11 @@ bf.EnableOut1 = false; % send transmit out of SMA2
 
 %% Setup the TDD engine
 
+bf_TDD = setupTddEngine();
 tStartRamp = 0;
 tStartCollection = 0;
-bf_TDD = adi.PhaserTDD('uri', plutoURI);
-bf_TDD();
+phaserEnable = 1;
+bf_TDD.PhaserEnable = phaserEnable; % enable triggered mode
 bf_TDD.Enable = 0;   % TDD must be disabled before changing properties
 bf_TDD.EnSyncExternal = 1;
 bf_TDD.StartupDelay = 0;
@@ -109,19 +108,22 @@ bf_TDD.Ch0Polarity = 0;
 bf_TDD.Ch0On = tStartRamp;
 bf_TDD.Ch0Off = tsweep; % this doesn't need to be tsweep, this just ensures control pulse ends before next PLL pulse starts
 bf_TDD.Ch1Enable = 1;
-bf_TDD.Ch1Polarity = 0;
+bf_TDD.Ch1Polarity = double(~phaserEnable);
 bf_TDD.Ch1On = tStartCollection;
 bf_TDD.Ch1Off = tStartCollection+0.1;
+bf_TDD.Ch2Enable = 0;
+bf_TDD.Ch2Polarity = double(~phaserEnable);
+bf_TDD.Ch2On = 0;
+bf_TDD.Ch2Off = bf_TDD.FrameLength*nPulses;
 bf_TDD.Enable = 1;
 
 %% Trigger TDD and Plot
 
+% Capture receive data after Coherent Processing Interval (CPI)
 rx();
 tx(txWaveform);
 bf.Burst=false;bf.Burst=true;bf.Burst=false;
 data = rx();
-
-% Rearrange data to be nSamples x nPulses, throw out samples when the PLL is not sweeping
 
 % Show data timing
 plotDataTiming(data,fs,tStartRamp,tsweep,tpulse);
@@ -137,6 +139,16 @@ axes(figure)
 rd.plotResponse(data);
 ax = gca;
 xlim(ax,[-maxSpeed,maxSpeed]); ylim(ax,[0,maxRange]);
+
+%% Disable Triggered Mode
+
+phaserEnable = 0;
+bf_TDD.PhaserEnable = phaserEnable;
+bf_TDD.Enable = 0;
+bf_TDD.Ch1Polarity = double(~phaserEnable);
+bf_TDD.Ch2Polarity = double(phaserEnable);
+bf_TDD.Enable = 1;
+bf_TDD.Enable = 0;
 
 %% Helpers
 

@@ -29,8 +29,6 @@ N = rx.SamplesPerFrame;
 % frequency.
 for centerfrequency = fvec
     % The LO is set to 4x the Frequency setting.
-    %%% VI : Where is this ? I see line 31 in setupPhaser looking similar
-    %%% to this
     bf.Frequency = (centerfrequency + rx.CenterFrequency)/4;
     rx();
 

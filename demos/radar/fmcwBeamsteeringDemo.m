@@ -41,7 +41,8 @@ end
 clear; close all;
 
 % This will only work if the generateCalibrationWeights() function has been
-% run in the prior section.
+% run in the prior section. If you get an error, run the
+% generateCalibrationWeights function.
 calibrationweights = loadCalibrationWeights();
 
 %% First, setup the system similarly to fmcwDemo.m
@@ -102,6 +103,9 @@ end
 ax = axes(figure);
 plot(steerangles,amplitudes);
 xlabel("Steer Angle"); ylabel("Signal Amplitude");
+
+% Disable TDD Trigger so we can operate in Receive only mode
+disableTddTrigger(bf_TDD)
 
 
 %% Helpers
