@@ -18,7 +18,7 @@ f_step = 5e6;
 fvec = f_start : f_step : f_stop;
 
 % Setup the antenna, setting the frequency to f_start.
-[rx,bf,~] = setupAntenna(f_start);
+[rx,bf,~,tx,bf_TDD] = setupAntenna(f_start);
 
 % Setup variables for capturing scan amplitude and frequency.
 full_ampl = [];
@@ -57,4 +57,7 @@ txFrequency = full_freqs(maxdatapointidx,maxframeidx);
 ax = axes(figure);
 plot(ax,full_freqs/1e9,full_ampl); xlabel('Frequency (GHz)'); ylabel('Amplitude (dB)');
 title(ax,['HB100 Frequency = ' num2str(txFrequency/1e9) 'GHz']);
+
+cleanupAntenna(rx,tx,bf,bf_TDD);
+
 end

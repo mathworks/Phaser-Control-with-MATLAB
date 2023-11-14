@@ -24,16 +24,16 @@ fs = max(ceil(2*fmaxbeat),520834);
 nSamples = ceil(tpulse * nPulses * fs);
 
 % Setup the entire system
-[rx,bf,model,tx,plutoURI] = setupAntenna(fc);
+[rx,bf,model,tx,bf_TDD] = setupAntenna(fc);
 
 % Setup pluto for radar
 radarPlutoSetup(tx,rx,fs,nSamples);
 
 % Setup the phaser for FMCW radar
-radarPhaserSetup(bf,rampbandwidth,fc,tsweep);
+radarPhaserSetup(bf,rx,rampbandwidth,fc,tsweep);
 
 % Setup the TDD engine
-radarTddSetup()
+radarTddSetup(bf_TDD,tpulse,nPulses,tsweep)
 
 end
 

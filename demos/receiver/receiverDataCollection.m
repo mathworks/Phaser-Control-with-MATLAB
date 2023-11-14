@@ -11,13 +11,6 @@
 %
 % Copyright 2023 The MathWorks, Inc.
 
-%% Add entire repository to the path
-
-filepath = fileparts(which('receiverDataCollection'));
-directoryIdxs = find(filepath == '\' | filepath == '/');
-directoryIdx2Add = directoryIdxs(end-1);
-addpath(genpath(filepath(1:directoryIdx2Add)));
-
 %% Disable warnings
 
 % Turn off obsolete system object warning

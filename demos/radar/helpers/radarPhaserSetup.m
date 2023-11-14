@@ -1,4 +1,4 @@
-function radarPhaserSetup(bf,rampbandwidth,fc,tsweep)
+function radarPhaserSetup(bf,rx,rampbandwidth,fc,tsweep)
 % Setup phaser beamformer and pll for radar
 %
 % Copyright 2023 The MathWorks, Inc.

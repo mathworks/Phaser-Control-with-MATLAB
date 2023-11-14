@@ -17,13 +17,6 @@
 %
 % Copyright 2023 The MathWorks, Inc.
 
-%% Add entire repository to the path
-
-filepath = fileparts(which('fmcwBeamsteeringDemo'));
-directoryIdxs = find(filepath == '\' | filepath == '/');
-directoryIdx2Add = directoryIdxs(end-1);
-addpath(genpath(filepath(1:directoryIdx2Add)));
-
 %% Before doing any beamsteering, we need to calculate calibration weights for the antenna.
 
 % Change this value to true if we need to calculate calibration
