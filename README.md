@@ -27,7 +27,7 @@ The [fmcwBeamsteeringDemo](demos/radar/fmcwBeamsteeringDemo.m) script shows you 
 
 [The MATLAB Phaser setup guide](https://wiki.analog.com/phaser_matlab) explains the required setup steps in detail. Follow the instructions on this page to setup MATLAB and the Phaser.
 
-For the scripts in this repository to run successfully, MATLAB must be configured properly, and the Phaser must be connected. There may be additional setup steps in the comments of the scripts that you are running.
+For the scripts in this repository to run successfully, MATLAB must be configured properly, and the Phaser must be connected. Make sure to read the comments in the script that you are running, as there may be additional setup steps required - these additional setup steps will be found in the comments.
 
 ### MathWorks Products (https://www.mathworks.com)
 
