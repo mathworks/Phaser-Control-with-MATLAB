@@ -6,7 +6,8 @@ This repository contains files that demonstrate how to use MATLAB&reg; to contro
 
 One set of demonstration files shows how to collect data using the Phaser as a receiver with the HB100 being used as a single tone transmitter. These demonstrations use the MATLAB Phased Array System Toolbox&trade; to generate beamforming weights and compare real received data to simulated received data.
 
-These files demonstrate a simple calibration routine to ensure expected functionality of the Phaser board. Once calibrated, the following phased array techniques are demonstrated:
+The [receiverDataCollection](demos/receiver/receiverDataCollection) script can be run to demonstrate a number of different phased array methods and effects:
+- Antenna calibration
 - Antenna tapering to reduce pattern sidelobes
 - Impact of antenna element spacing in the form of grating lobes
 - Null steering for interference cancellation
@@ -16,7 +17,11 @@ The files demonstrating using Phaser as a receiver form the basis for a presenta
 
 ### Phaser as a Radar
 
-A second set of demonstration files shows how to collect data using the Phaser as an FMCW radar, transmitting and receiving data synchronously. These demos show you how to get up and running using the Phaser as a radar as well as how to do some simple receive beamforming when the Phaser is configured as a radar.
+A second set of demonstration files shows how to collect data using the Phaser as an FMCW radar, transmitting and receiving data synchronously.
+
+The [fmcwDemo](demos/radar/fmcwDemo.m) script shows you how to get up and running using the Phaser as a radar.
+
+The [fmcwBeamsteeringDemo](demos/radar/fmcwBeamsteeringDemo.m) script shows you how to do some simple receive beamforming when the Phaser is configured as a radar.
 
 ## Setup
 
