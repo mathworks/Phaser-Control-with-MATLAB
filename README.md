@@ -6,7 +6,7 @@ This repository contains files that demonstrate how to use MATLAB&reg; to contro
 
 One set of demonstration files shows how to collect data using the Phaser as a receiver with the HB100 being used as a single tone transmitter. These demonstrations use the MATLAB Phased Array System Toolbox&trade; to generate beamforming weights and compare real received data to simulated received data.
 
-The [receiverDataCollection](demos/receiver/receiverDataCollection) script can be run to demonstrate a number of different phased array methods and effects:
+The [receiverDataCollection](demos/receiver/receiverDataCollection.m) script can be run to demonstrate a number of different phased array methods and effects:
 - Antenna calibration
 - Antenna tapering to reduce pattern sidelobes
 - Impact of antenna element spacing in the form of grating lobes
@@ -74,7 +74,7 @@ If not all of these connections are being shown, try unplugging and plugging in 
 
 ## Getting Started
 
-This repository contains demonstration scripts for using MATLAB to control and collect data from the Phaser board. Demo scripts can be found under the demos/ directory. Try running any of these demo scripts to get up and running.
+This repository contains demonstration scripts for using MATLAB to control and collect data from the Phaser board. Demo scripts can be found under the [demos/] directory. Try running any of these demo scripts to get up and running.
 
 - The scripts in [demos/radar/](demos/radar/) are run with the Phaser configured as a transmitter and receiver. The files under [demos/radar/helpers/](demos/radar/helpers/) are used in the main scripts to assist with control, data collection, or visualization.
 - The scripts in [demos/receiver/](demos/receiver/) are run with the Phaser configured as a receiver only and the HB100 operating as a transmitter. The files under [demos/receiver/helpers/](demos/receiver/helpers/) are used in the main scripts to assist with control, data collection, or visualization.
