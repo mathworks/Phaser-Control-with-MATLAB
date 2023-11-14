@@ -98,16 +98,16 @@ bf_TDD.FrameLength = tpulse*1e3;  %frame length in ms
 bf_TDD.BurstCount = nPulses;
 bf_TDD.Ch0Enable = 1;
 bf_TDD.Ch0Polarity = 0;
-bf_TDD.Ch0On = tStartRamp;
+bf_TDD.Ch0On = tStartRamp; % Time to start PLL sweep in a frame
 bf_TDD.Ch0Off = tsweep; % this doesn't need to be tsweep, this just ensures control pulse ends before next PLL pulse starts
 bf_TDD.Ch1Enable = 1;
 bf_TDD.Ch1Polarity = double(~phaserEnable);
-bf_TDD.Ch1On = tStartCollection;
+bf_TDD.Ch1On = tStartCollection; % Time to start data collection in a frame
 bf_TDD.Ch1Off = tStartCollection+0.1;
 bf_TDD.Ch2Enable = 0;
 bf_TDD.Ch2Polarity = double(~phaserEnable);
 bf_TDD.Ch2On = 0;
-bf_TDD.Ch2Off = bf_TDD.FrameLength*nPulses;
+bf_TDD.Ch2Off = 0.1;
 bf_TDD.Enable = 1;
 
 %% Trigger TDD and Plot
