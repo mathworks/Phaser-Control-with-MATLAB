@@ -15,7 +15,7 @@
 
 %% Add entire repository to the path
 
-filepath = fileparts(which('workshopDataCollection'));
+filepath = fileparts(which('fmcwDemo'));
 directoryIdxs = find(filepath == '\' | filepath == '/');
 directoryIdx2Add = directoryIdxs(end-1);
 addpath(genpath(filepath(1:directoryIdx2Add)));
