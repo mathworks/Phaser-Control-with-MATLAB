@@ -11,7 +11,9 @@
 %
 % Copyright 2023 The MathWorks, Inc.
 
-%% Disable warnings
+%% Setup
+
+clear; close all;
 
 % Turn off obsolete system object warning
 warning('off','MATLAB:system:ObsoleteSystemObjectMixin')
@@ -75,7 +77,7 @@ targetoffset = 10; % Pattern width to show
 % Use the monopulse phase information to create a simple feedback mechanism
 % to track the transmitter angle. Move the HB100 or rotate the antenna and
 % watch the transmitter location be tracked.
-runtime = 60; % runtime in seconds, adjust as necessary
+runtime = 20; % runtime in seconds, adjust as necessary
 monopulseFollower(fc_hb100,finalcalweights,runtime);
 
 %% Scan antenna
@@ -86,11 +88,3 @@ scanangles = -90:0.5:90; % Scan angles
 nscans = 1; % Number of scans
 showsubarrays = true; % Toggle whether to show subarray patterns
 scanAntenna(fc_hb100,finalcalweights,scanangles,nscans,showsubarrays);
-
-%% Point antenna in one direction, move transmitter
-
-% This function will steer the array to a single direction, the user can
-% move the transmitter around to get a sense for the antenna pattern.
-scanangle = 0; % Scan angle
-tscan = 20; % Scan time (seconds)
-scanTransmitter(fc_hb100,finalcalweights,scanangle,tscan)

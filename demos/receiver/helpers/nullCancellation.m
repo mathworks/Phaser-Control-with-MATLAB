@@ -23,7 +23,7 @@ simpattern = helperSimulateNull(fc_hb100,steerangles,nullangle);
 simdb = mag2db(simpattern);
 
 % Plot the pattern with and without nulling
-ax = axes(figure); hold(ax,"on");
+ax = axes(figure); hold(ax,"on"); title(ax,"Pattern Nulling")
 plot(ax,steerangles,ampafterdb-max(ampafterdb),"DisplayName","Collected With Nulling");
 plot(ax,steerangles,simdb-max(simdb),"DisplayName","Simulated Nulling")
 legend(Location="southeast");
