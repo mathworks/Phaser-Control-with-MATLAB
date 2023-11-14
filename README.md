@@ -1,6 +1,6 @@
 # MATLAB Phaser Board Data Collection
 
-This repository contains files that demonstrate how to use MATLAB&reg; to control the Analog Devices&copy; (ADI) Phaser Board.
+This repository contains files that demonstrate how to use MATLAB&reg; to control the Analog Devices&copy; (ADI) ADALM PHASER kit ([CN0566](https://www.analog.com/en/design-center/reference-designs/circuits-from-the-lab/cn0566.html#rd-description)).
 
 ### Phaser as a Receiver
 
