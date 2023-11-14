@@ -23,6 +23,10 @@ The [fmcwDemo](demos/radar/fmcwDemo.m) script shows you how to get up and runnin
 
 The [fmcwBeamsteeringDemo](demos/radar/fmcwBeamsteeringDemo.m) script shows you how to do some simple receive beamforming when the Phaser is configured as a radar.
 
+### Expected Demo Script Results
+
+The expected output of all of each of the demo scripts can be found [here](demos/ExpectedDemoOutputs.pdf).
+
 ## Setup
 
 [The MATLAB Phaser setup guide](https://wiki.analog.com/phaser_matlab) explains the required setup steps in detail. Follow the instructions on this page to setup MATLAB and the Phaser.
