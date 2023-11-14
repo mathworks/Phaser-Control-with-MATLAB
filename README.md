@@ -74,7 +74,7 @@ If not all of these connections are being shown, try unplugging and plugging in 
 
 ## Getting Started
 
-This repository contains demonstration scripts for using MATLAB to control and collect data from the Phaser board. Demo scripts can be found under the [demos/] directory. Try running any of these demo scripts to get up and running.
+This repository contains demonstration scripts for using MATLAB to control and collect data from the Phaser board. Demo scripts can be found under the [demos/](demos/) directory. Try running any of these demo scripts to get up and running.
 
 - The scripts in [demos/radar/](demos/radar/) are run with the Phaser configured as a transmitter and receiver. The files under [demos/radar/helpers/](demos/radar/helpers/) are used in the main scripts to assist with control, data collection, or visualization.
 - The scripts in [demos/receiver/](demos/receiver/) are run with the Phaser configured as a receiver only and the HB100 operating as a transmitter. The files under [demos/receiver/helpers/](demos/receiver/helpers/) are used in the main scripts to assist with control, data collection, or visualization.
