@@ -25,7 +25,7 @@ The [fmcwBeamsteeringDemo](demos/radar/fmcwBeamsteeringDemo.m) script shows you 
 
 ### Expected Demo Script Results
 
-The expected output of all of each of the demo scripts can be found [here](demos/ExpectedDemoOutputs.pdf).
+The expected output of all of each of the demo scripts can be found in [demos/ExpectedDemoOutputs.pdf](demos/ExpectedDemoOutputs.pdf). After running these scripts, check that your results are similar to ensure that your system is set up properly.
 
 ## Setup
 
