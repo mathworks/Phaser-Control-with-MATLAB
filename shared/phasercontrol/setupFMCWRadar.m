@@ -1,4 +1,4 @@
-function [rx,tx,bf,bf_TDD,model] = setupFMCWRadar(fc)
+function [rx,tx,bf,bf_TDD,model,fc,fs,sweepslope,prf,maxSpeed,maxRange] = setupFMCWRadar(fc)
 % Setup the phaser for FMCW Radar Operation. These steps are derived in
 % fmcwDemo.m.
 % 
