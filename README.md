@@ -21,6 +21,8 @@ A second set of demonstration files shows how to collect data using the Phaser a
 
 The [fmcwDemo](demos/radar/fmcwDemo.m) script shows you how to get up and running using the Phaser as a radar.
 
+The [fmcwRunContinuous](demos/radar/fmcwRunContinuous.m) script shows you how to continuously run the FMCW radar and plot a Range-Doppler response.
+
 The [fmcwBeamsteeringDemo](demos/radar/fmcwBeamsteeringDemo.m) script shows you how to do some simple receive beamforming when the Phaser is configured as a radar.
 
 ### Expected Demo Script Results

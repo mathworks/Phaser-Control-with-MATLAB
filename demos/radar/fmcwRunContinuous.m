@@ -9,6 +9,8 @@
 % Notes:
 %
 % Run this script to continuously run the FMCW radar for demonstration.
+% The first time this script is run, the data collection may not occur
+% properly.
 %
 % Copyright 2023 The MathWorks, Inc.
 
@@ -16,14 +18,31 @@
 
 clear; close all;
 
-%% First, setup the system similarly to fmcwDemo.m
+%% First, setup the system, see fmcwDemo.m for more details
 
 % Carrier frequency
 fc = 10e9;
 lambda = physconst("LightSpeed")/fc;
 
+% Put some requirements on the system
+maxRange = 10;
+rangeResolution = 1/3;
+maxSpeed = 5;
+speedResolution = 1/2;
+
+% Determine some parameter values
+rampbandwidth = ceil(rangeres2bw(rangeResolution)/1e6)*1e6;
+fmaxdop = speed2dop(2*maxSpeed,lambda);
+prf = 2*fmaxdop;
+nPulses = ceil(2*maxSpeed/speedResolution);
+tpulse = ceil((1/prf)*1e3)*1e-3;
+tsweep = getFMCWSweepTime(tpulse,tpulse);
+sweepslope = rampbandwidth / tsweep;
+fmaxbeat = sweepslope * range2time(maxRange);
+fs = max(ceil(2*fmaxbeat),520834);
+
 % See fmcw demo for these setup steps
-[rx,tx,bf,bf_TDD,model,fc,fs,sweepslope,prf,maxSpeed,maxRange] = setupFMCWRadar(fc);
+[rx,tx,bf,bf_TDD,model] = setupFMCWRadar(fc,fs,tpulse,tsweep,nPulses,rampbandwidth);
 
 % Clear cache
 rx();

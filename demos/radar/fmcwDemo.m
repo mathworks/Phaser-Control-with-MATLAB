@@ -9,7 +9,8 @@
 %
 % Run this script to generate a range doppler plot, as
 % well as a few plots that illustrate the timing of a pulse repitition
-% interval.
+% interval. The first time this script is run, the data collection may not
+% occur properly.
 %
 % Copyright 2023 The MathWorks, Inc.
 
@@ -45,7 +46,7 @@ nSamples = ceil(tpulse * nPulses * fs); % Get the total number of samples in a P
 % Setup the pluto
 [rx,tx] = setupPluto();
 
-% Setup receiver
+% Setup pluto sampling
 rx.SamplesPerFrame = nSamples;
 rx.SamplingRate = fs;
 
@@ -65,19 +66,19 @@ txWaveform = amp*ones(nSamples,2);
 
 %% Setup the Phaser
 
-% Beamformers
+% Setup beamformers all to max gain with no phase shifts
 bf = setupPhaser(rx,fc);
 bf.RxPowerDown(:) = 0;
 bf.RxGain(:) = 127;
 
-% ADF4159
+% Setup ADF4159
 bf.Frequency = (fc+rx.CenterFrequency)/4;
 BW = rampbandwidth / 4; 
 num_steps = 2^9;
 bf.FrequencyDeviationRange = BW;
 bf.FrequencyDeviationStep = ((BW) / num_steps);
 bf.FrequencyDeviationTime = tsweep*1e6; % convert to us
-bf.RampMode = "single_sawtooth_burst";
+bf.RampMode = "single_sawtooth_burst"; % use a single sawtooth, other waveforms are available
 bf.TriggerEnable = true;  % start a ramp with TXdata
 bf.EnablePLL = true;
 bf.EnableTxPLL = true;
@@ -95,7 +96,7 @@ bf_TDD.EnSyncExternal = 1;
 bf_TDD.StartupDelay = 0;
 bf_TDD.SyncReset = 0;
 bf_TDD.FrameLength = tpulse*1e3;  %frame length in ms
-bf_TDD.BurstCount = nPulses;
+bf_TDD.BurstCount = nPulses; % Number of pulses in a CPI
 bf_TDD.Ch0Enable = 1;
 bf_TDD.Ch0Polarity = 0;
 bf_TDD.Ch0On = tStartRamp; % Time to start PLL sweep in a frame
@@ -112,7 +113,7 @@ bf_TDD.Enable = 1;
 
 %% Trigger TDD and Plot
 
-% Capture receive data after Coherent Processing Interval (CPI)
+% Capture receive data after Coherent Processing Interval (CPI).
 rx();
 tx(txWaveform);
 bf.Burst=false;bf.Burst=true;bf.Burst=false;
@@ -135,6 +136,7 @@ xlim(ax,[-maxSpeed,maxSpeed]); ylim(ax,[0,maxRange]);
 
 %% Disable Triggered Mode
 
+% Disable the TDD engine
 phaserEnable = 0;
 bf_TDD.PhaserEnable = phaserEnable;
 bf_TDD.Enable = 0;

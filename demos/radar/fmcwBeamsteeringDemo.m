@@ -10,7 +10,9 @@
 %
 % Run this script to generate a plot of the array factor when the transmit
 % antenna is pointed towards the array. The received signal amplitude is
-% highest when the receive beam is steered towards the transmit antenna.
+% highest when the receive beam is steered towards the transmit antenna. 
+% The first time this script is run, the data collection may not occur
+% properly.
 %
 % Before performing beamforming, the Phaser analog and digital channels
 % must be calibrated for phase and amplitude errors. 
@@ -44,8 +46,25 @@ calibrationweights = loadCalibrationWeights();
 fc = 10e9;
 lambda = physconst("LightSpeed")/fc;
 
+% Put some requirements on the system
+maxRange = 10;
+rangeResolution = 1/3;
+maxSpeed = 5;
+speedResolution = 1/2;
+
+% Determine some parameter values
+rampbandwidth = ceil(rangeres2bw(rangeResolution)/1e6)*1e6;
+fmaxdop = speed2dop(2*maxSpeed,lambda);
+prf = 2*fmaxdop;
+nPulses = ceil(2*maxSpeed/speedResolution);
+tpulse = ceil((1/prf)*1e3)*1e-3;
+tsweep = getFMCWSweepTime(tpulse,tpulse);
+sweepslope = rampbandwidth / tsweep;
+fmaxbeat = sweepslope * range2time(maxRange);
+fs = max(ceil(2*fmaxbeat),520834);
+
 % See fmcw demo for these setup steps
-[rx,tx,bf,bf_TDD,model] = setupFMCWRadar(fc);
+[rx,tx,bf,bf_TDD,model] = setupFMCWRadar(fc,fs,tpulse,tsweep,nPulses,rampbandwidth);
 
 % Clear cache
 rx();
