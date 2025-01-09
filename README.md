@@ -140,6 +140,7 @@ This should resolve the error condition.
 ### Failed to create context for uri: ip:phaser.local
 If you see the following error in MATLAB, it is possible that the Raspberry Pi has SD card has been corrupted:
 
+```
 Error using matlabshared.libiio.base/cstatusid
 Failed to create context for uri: ip:phaser.local 
 The address is not available. Make sure the device is connected and try again.
@@ -148,6 +149,7 @@ Error in matlabshared.libiio.base/getContext
 
 Error in adi.internal.ADAR100x/setupImpl (line 1284)
             getContext(obj);
+```
 
 In order to resolve this issue, burn a new image to the SD card. This should resolve the problem.
 
