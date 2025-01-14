@@ -151,7 +151,7 @@ Error in adi.internal.ADAR100x/setupImpl (line 1284)
             getContext(obj);
 ```
 
-In order to resolve this issue, burn a new image to the SD card. This should resolve the problem.
+In order to resolve this issue, [burn a new image to the SD card](https://wiki.analog.com/resources/eval/user-guides/circuits-from-the-lab/cn0566/quickstart#sd_cardsoftware_setup). This should resolve the problem.
 
 ## License
 
