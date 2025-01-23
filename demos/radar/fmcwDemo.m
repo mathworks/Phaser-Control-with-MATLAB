@@ -89,8 +89,7 @@ bf.EnableOut1 = false; % send transmit out of SMA2
 bf_TDD = setupTddEngine();
 tStartRamp = 0;
 tStartCollection = 0;
-phaserEnable = 1;
-bf_TDD.PhaserEnable = phaserEnable; % enable triggered mode
+bf_TDD.PhaserEnable = 1; % enable triggered mode
 bf_TDD.Enable = 0;   % TDD must be disabled before changing properties
 bf_TDD.EnSyncExternal = 1;
 bf_TDD.StartupDelay = 0;
@@ -102,11 +101,11 @@ bf_TDD.Ch0Polarity = 0;
 bf_TDD.Ch0On = tStartRamp; % Time to start PLL sweep in a frame
 bf_TDD.Ch0Off = tsweep; % this doesn't need to be tsweep, this just ensures control pulse ends before next PLL pulse starts
 bf_TDD.Ch1Enable = 1;
-bf_TDD.Ch1Polarity = double(~phaserEnable);
+bf_TDD.Ch1Polarity = 0;
 bf_TDD.Ch1On = tStartCollection; % Time to start data collection in a frame
 bf_TDD.Ch1Off = tStartCollection+0.1;
-bf_TDD.Ch2Enable = 0;
-bf_TDD.Ch2Polarity = double(~phaserEnable);
+bf_TDD.Ch2Enable = 1;
+bf_TDD.Ch2Polarity = 0;
 bf_TDD.Ch2On = 0;
 bf_TDD.Ch2Off = 0.1;
 bf_TDD.Enable = 1;
@@ -137,11 +136,10 @@ xlim(ax,[-maxSpeed,maxSpeed]); ylim(ax,[0,maxRange]);
 %% Disable Triggered Mode
 
 % Disable the TDD engine
-phaserEnable = 0;
-bf_TDD.PhaserEnable = phaserEnable;
+bf_TDD.PhaserEnable = 0;
 bf_TDD.Enable = 0;
-bf_TDD.Ch1Polarity = double(~phaserEnable);
-bf_TDD.Ch2Polarity = double(phaserEnable);
+bf_TDD.Ch1Polarity = 1;
+bf_TDD.Ch2Polarity = 1;
 bf_TDD.Enable = 1;
 bf_TDD.Enable = 0;
 
