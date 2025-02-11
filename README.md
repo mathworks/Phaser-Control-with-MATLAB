@@ -35,6 +35,10 @@ The expected output of all of each of the demo scripts can be found in [demos/Ex
 
 For the scripts in this repository to run successfully, MATLAB must be configured properly, and the Phaser must be connected. Make sure to read the comments in the script that you are running, as there may be additional setup steps required - these additional setup steps will be found in the comments.
 
+## Shutdown
+
+When shutting down the Phaser, try to avoid removing power until the board is shut down correctly. To power down correctly, press the small white button on the back of the phaser board (labeled RPI SHUTDOWN) – this will initiate the raspberry pi shutdown procedure.  Then wait about 5 seconds for the Pis lights to stop blinking.  And then you can remove power.
+
 ### MathWorks Products (https://www.mathworks.com)
 
 [The MATLAB Phaser setup guide](https://wiki.analog.com/phaser_matlab) lists the MATLAB products required in order to successfully run the files in this repo.
