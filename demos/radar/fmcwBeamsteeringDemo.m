@@ -99,7 +99,7 @@ for azangle = steerangles
     setAnalogBfWeights(bf,analogWeights);
 
     % capture data
-    data = captureTransmitWaveform(txWaveform,rx,tx,bf);
+    data = captureTransmitWaveform(rx,tx,bf,txWaveform);
 
     % Apply digital weights
     data = data * conj(digitalWeights);

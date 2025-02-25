@@ -62,7 +62,7 @@ rd = phased.RangeDopplerResponse(DopplerOutput="Speed",...
 ax = axes(figure);
 for i = 1:nCaptures
     % capture data
-    data = captureTransmitWaveform(txWaveform,rx,tx,bf);
+    data = captureTransmitWaveform(rx,tx,bf,txWaveform);
 
     % Arrange data into pulses
     data = arrangePulseData(data,rx,bf,bf_TDD);
