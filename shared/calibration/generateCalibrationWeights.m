@@ -18,8 +18,12 @@ warning('off','MATLAB:system:ObsoleteSystemObjectMixin');
 % Find the hb100 center frequency
 fc_hb100 = findTxFrequency();
 
+pause(5);
+
 % Save the gain profile for the antenna.
 saveGainProfile(fc_hb100);
+
+pause(5);
 
 % Get the calibration data
 CalibrationData = calibrationRoutine(fc_hb100);

@@ -1,7 +1,7 @@
 function calibGainCode = helperGainCodes(analogWeights)
     % Get gain code for each subarray
 
-    % Copyright 2023 The MathWorks, Inc.
+    % Copyright 2023-2025 The MathWorks, Inc.
 
     sub1weights = analogWeights(:,1);
     sub2weights = analogWeights(:,2);
@@ -10,7 +10,11 @@ function calibGainCode = helperGainCodes(analogWeights)
 
     % Loading the measured gain profiles. These are captured using the
     % script saveGainProfile.m.
-    load('GainProfile.mat','subArray1_NormalizedGainProfile','subArray2_NormalizedGainProfile','gaincode'); 
+    try
+        load('GainProfile.mat','subArray1_NormalizedGainProfile','subArray2_NormalizedGainProfile','gaincode'); 
+    catch
+        error('No GainProfile.mat file was found. Please run calibration');
+    end
     
     calibGainCode = zeros(1,8);
     for nch = 1 : 4

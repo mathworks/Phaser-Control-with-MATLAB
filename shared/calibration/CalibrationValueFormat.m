@@ -5,8 +5,8 @@ classdef CalibrationValueFormat
     % Copyright 2023 The MathWorks, Inc.
     
     properties
-        AnalogWeights
-        DigitalWeights
+        AnalogWeights = ones(4,2);
+        DigitalWeights = ones(2,1);
     end
     
     methods
@@ -16,4 +16,3 @@ classdef CalibrationValueFormat
         end
     end
 end
-

@@ -29,10 +29,12 @@ tx.EnableCyclicBuffers = true;
 tx.DataSource = "DMA";
 
 % Setup beamformers all to max gain with no phase shifts
-% TODO: this is where we should include calibration coefficients
+calibrationweights = loadCalibrationWeights();
 bf = setupPhaser(rx,fc);
 bf.RxPowerDown(:) = 0;
-bf.RxGain(:) = 127;
+
+% Load calibration data into beamformer
+setAnalogBfWeights(bf,calibrationweights.AnalogWeights);
 
 % Setup Phase Locked Loop (PLL)
 bf.Frequency = (fc+rx.CenterFrequency)/4;
