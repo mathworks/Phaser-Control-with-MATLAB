@@ -1,15 +1,11 @@
-function [rx,tx,bf,bf_TDD] = setupLabRadar(fc,prf,nPulses,fs,rampbandwidth)
-% This function sets up the Phaser as an FMCW radar for the workshop radar
-% labs.
+function [rx,tx,bf,bf_TDD] = setupLabRadarFixedLO(fc,fs,prf)
+% This function sets up the Phaser as a radar with a fixed LO frequency 
 
 % Pulse time has to be rounded to the nearest ms
 tpulse = ceil((1/prf)*1e3)*1e-3;
 
-% We set up the sweep to occupy as much of the pulse as possible
-tsweep = getFMCWSweepTime(tpulse,tpulse);
-
 % Get the total number of samples in a pulse repetition period
-nSamples = ceil(tpulse * nPulses * fs);
+nSamples = ceil(tpulse * fs);
 
 % Setup the pluto
 [rx,tx] = setupPluto();
@@ -37,12 +33,7 @@ setAnalogBfWeights(bf,calibrationweights.AnalogWeights);
 
 % Setup Phase Locked Loop (PLL)
 bf.Frequency = (fc+rx.CenterFrequency)/4;
-BW = rampbandwidth / 4;
-num_steps = 2^9;
-bf.FrequencyDeviationRange = BW;
-bf.FrequencyDeviationStep = ((BW) / num_steps);
-bf.FrequencyDeviationTime = tsweep*1e6;
-bf.RampMode = "single_sawtooth_burst";
+bf.RampMode = "disabled";
 bf.TriggerEnable = true;
 bf.EnablePLL = true;
 bf.EnableTxPLL = true;
@@ -58,11 +49,11 @@ bf_TDD.EnSyncExternal = 1;
 bf_TDD.StartupDelay = 0;
 bf_TDD.SyncReset = 0;
 bf_TDD.FrameLength = tpulse*1e3;
-bf_TDD.BurstCount = nPulses;
+bf_TDD.BurstCount = 1;
 bf_TDD.Ch0Enable = 1;
 bf_TDD.Ch0Polarity = 0;
 bf_TDD.Ch0On = tStartRamp;
-bf_TDD.Ch0Off = tsweep;
+bf_TDD.Ch0Off = tpulse;
 bf_TDD.Ch1Enable = 1;
 bf_TDD.Ch1Polarity = 0;
 bf_TDD.Ch1On = tStartCollection;
