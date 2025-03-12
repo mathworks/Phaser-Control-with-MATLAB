@@ -12,7 +12,7 @@ function saveGainProfile(fc_hb100)
 % Copyright 2023 The MathWorks, Inc.
 
 % Setup antenna
-[rx,bf,~] = setupAntenna(fc_hb100);
+[rx,bf,~,tx,bf_TDD] = setupAntenna(fc_hb100);
 
 % Measure the amplitude of each channel for each of the gain codes between
 % 0 and 127. 
@@ -66,6 +66,8 @@ plotGainCodes(ax,2,gaincode,subArray2_NormalizedGainProfile);
 filepath = fileparts(which('saveGainProfile'));
 gainProfile_filename = [filepath,'\','GainProfile.mat'];
 save(gainProfile_filename,"subArray1_NormalizedGainProfile","subArray2_NormalizedGainProfile","gaincode");
+
+cleanupAntenna(rx,tx,bf,bf_TDD);
     
 function plotGainCodes(ax,array,codes,profile)
     [~,numElements] = size(profile);

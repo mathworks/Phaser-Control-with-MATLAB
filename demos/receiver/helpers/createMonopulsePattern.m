@@ -18,7 +18,7 @@ function [monopulsePattern,MonopulseData] = createMonopulsePattern(fc_hb100,Cali
 antennaInteractor = AntennaInteractor(fc_hb100,CalibrationData);
 
 % steer angles generated based on target angle and offset
-steerangles = targetangle-targetoffset:1:targetangle+targetoffset;
+steerangles = targetangle-targetoffset:0.5:targetangle+targetoffset;
 
 % Collect monopulse data
 [sumdiffampdelta,sumdiffphasedelta,patternsumdata,patterndiffdata] = antennaInteractor.captureMonopulsePattern(steerangles);
@@ -42,6 +42,8 @@ patternax = nexttile();
 hold(patternax,"on")
 legend(patternax,"Location","southeast");
 title(patternax,"Sum-Diff Amplitudes");
+xlabel(patternax,"Azimuth Angle (Degrees)");
+ylabel(patternax,"Normalized dB");
 plot(patternax,steerangles,sumampdb-max(sumampdb),'DisplayName','Collected Sum Channel');
 plot(patternax,steerangles,diffampdb-max(sumampdb),'DisplayName','Collected Diff Channel');
 plot(patternax,steerangles,simsumdb-max(simsumdb),'DisplayName','Simulated Sum Channel');
@@ -52,6 +54,8 @@ phaseax = nexttile();
 hold(phaseax,"on");
 legend(phaseax,"Location","southeast");
 title(phaseax,"Sum-Diff Phase Delta")
+xlabel(patternax,"Azimuth Angle (Degrees)");
+ylabel(patternax,"Phase Difference");
 plot(phaseax,steerangles,sumdiffphasedelta,"DisplayName","Collected Phase Diff");
 plot(phaseax,steerangles,simphasedelta,"DisplayName","Simulated Phase Diff");
 

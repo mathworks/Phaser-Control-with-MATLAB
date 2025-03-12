@@ -52,20 +52,27 @@ classdef AntennaInteractor < handle
         end
 
         function [sumdiffampdelta,sumdiffphasedelta,sumpatterndata,diffpatternData] = captureMonopulsePattern(this,steerangles)
-            sumpatterndata = zeros(this.NumSamples,numel(steerangles));
-            diffpatternData = zeros(this.NumSamples,numel(steerangles));
+            nangles = length(steerangles);
+            sumpatterndata = zeros(this.NumSamples,nangles);
+            diffpatternData = zeros(this.NumSamples,nangles);
+            sumdiffampdelta = zeros(1,nangles);
+            sumdiffphasedelta = zeros(1,nangles);
             for ii = 1 : numel(steerangles)
-                % capture data
-                [analogweights,digitalweights] = this.getAllWeights(steerangles(ii));
-                rxdata = this.steerAnalog(analogweights);
-
-                % sum
-                sumpatterndata(:,ii) = rxdata * conj(digitalweights);
-
-                % diff
-                diffdigitalweights = digitalweights .* [1;-1];
-                diffpatternData(:,ii) = rxdata * conj(diffdigitalweights);
+                [sumdiffampdelta(ii),sumdiffphasedelta(ii),sumpatterndata(:,ii),diffpatternData(:,ii)] = captureMonopulseSnapshot(this,steerangles(ii));
             end
+        end
+
+        function [sumdiffampdelta,sumdiffphasedelta,sumpatterndata,diffpatternData] = captureMonopulseSnapshot(this,steerangle)
+            % capture data
+            [analogweights,digitalweights] = this.getAllWeights(steerangle);
+            rxdata = this.steerAnalog(analogweights);
+
+            % sum
+            sumpatterndata = rxdata * conj(digitalweights);
+
+            % diff
+            diffdigitalweights = digitalweights .* [1;-1];
+            diffpatternData = rxdata * conj(diffdigitalweights);
 
             % calulate sum and diff amplitude and phase deltas
             sumamp = mag2db(helperGetAmplitude(sumpatterndata));
