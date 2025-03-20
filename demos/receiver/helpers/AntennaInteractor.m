@@ -125,6 +125,11 @@ classdef AntennaInteractor < handle
         function codes = getGainCodes(~,analogWeights)
             codes = helperGainCodes(analogWeights);
         end
+
+        function cleanup(obj)
+            obj.PlutoControl.release();
+            obj.ArrayControl.release();
+        end
     end
 
     methods (Access = private)
