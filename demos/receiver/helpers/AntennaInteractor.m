@@ -23,7 +23,7 @@ classdef AntennaInteractor < handle
             this.NumSamples = rx.SamplesPerFrame;
             this.Model = model;
             this.Fc = fc;
-            this.SubSteer = phased.SteeringVector("SensorArray",this.Model.Subarray,'NumPhaseShifterBits',7);
+            this.SubSteer = phased.SteeringVector("SensorArray",this.Model.Subarray);
             this.ArraySteer = phased.SteeringVector("SensorArray",this.Model);
             this.AnalogWeights = calValues.AnalogWeights;
             this.DigitalWeights = calValues.DigitalWeights;
@@ -138,12 +138,12 @@ classdef AntennaInteractor < handle
             defaultDigitalWeights = this.DigitalWeights;
 
             % get steering weights
-            analogweights = this.SubSteer(this.Fc,steerangle);
-            digitalweights = this.ArraySteer(this.Fc,steerangle);
+            uncalanalogweights = this.SubSteer(this.Fc,steerangle);
+            uncaldigitalweights = this.ArraySteer(this.Fc,steerangle);
 
             % Apply calibration weights
-            analogweights = analogWeightsCalAdjustment(analogweights,defaultAnalogWeights);
-            digitalweights = digitalWeightsCalAdjustment(digitalweights,defaultDigitalWeights);
+            analogweights = analogWeightsCalAdjustment(uncalanalogweights,defaultAnalogWeights);
+            digitalweights = digitalWeightsCalAdjustment(uncaldigitalweights,defaultDigitalWeights);
         end
 
         function [analogweights,digitalweights] = getAllWeightsNull(this,steerangle,nullangle)
