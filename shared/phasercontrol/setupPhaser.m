@@ -10,7 +10,7 @@ bf = adi.Phaser;
 bf.uri = phaserURI;
 bf.SkipInit = true; % Bypass writing all initial attributes to speed things up
 bf();
-bf.ElementSpacing = physconst('LightSpeed') /fc/2; % half lambda spacing
+bf.ElementSpacing = freq2wavelen(10.39875e9)/2; % half lambda spacing
 
 % Put device in Rx mode
 bf.TxRxSwitchControl = {'spi','spi'};
