@@ -16,7 +16,7 @@ radarPlutoSetup(tx,rx,fs,nSamples);
 radarPhaserSetup(bf,rx,rampbandwidth,fc,tsweep);
 
 % Setup the TDD engine
-radarTddSetup(bf_TDD,tpulse,nPulses,tsweep)
+radarTddSetup(bf_TDD,tpulse,nPulses)
 
 end
 

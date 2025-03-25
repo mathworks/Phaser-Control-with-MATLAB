@@ -3,6 +3,9 @@ function outdata = arrangePulseData(indata,rx,bf,bf_TDD)
 %
 % Copyright 2023 The MathWorks, Inc.
 
+% Combine data from channels with calibration weights
+indata = applyDigitalCalWeights(indata);
+
 % Extract timing from pluto and phaser setup
 fs = rx.SamplingRate;
 tsweep = double(bf.FrequencyDeviationTime) / 1e6;
@@ -17,7 +20,7 @@ sweepoffsetsamples = ceil(tstartsweep * fs);
 sweepsamples = 1:ceil(tsweep * fs) + sweepoffsetsamples;
 
 % Get end index of pulse
-pulseendsample = ceil(tpulse * fs);
+pulseendsample = round(tpulse * fs);
 
 % Get all of the pulse start indices
 pulsestartsamples = (0:nPulses-1)*pulseendsample;

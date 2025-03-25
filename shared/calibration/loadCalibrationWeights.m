@@ -3,6 +3,11 @@ function calibrationweights = loadCalibrationWeights()
 
 filepath = fileparts(which('generateCalibrationWeights'));
 calweights_filename = [filepath,'\','CalibrationWeights.mat'];
-load(calweights_filename,'calibrationweights');
+if isfile(calweights_filename)
+    load(calweights_filename,'calibrationweights');
+else
+    calibrationweights = CalibrationValueFormat;
+end
+    
 
 end

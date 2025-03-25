@@ -49,7 +49,7 @@ function CalibrationData = calibrationRoutine(fc_hb100)
 %% Setup
 
 % Setup antenna and model
-[rx,bf,~] = setupAntenna(fc_hb100);
+[rx,bf,~,tx,bf_TDD] = setupAntenna(fc_hb100);
 
 % Setup sampling properties
 fs = 3e6;
@@ -329,8 +329,9 @@ CalibrationData.CalibrationWeights.FinalCalibrationWeights.AnalogWeights = analo
 CalibrationData.CalibrationWeights.FinalCalibrationWeights.DigitalWeights = digitalWeights;
 
 %% Release Hardware
-bf.release(); delete(bf);
-rx.release(); delete(rx);
+
+% Cleanup resources
+cleanupAntenna(rx,tx,bf,bf_TDD);
 
 %% Plot final data: uncalibrated data vs. calibrated data vs. simulated data
 
@@ -360,4 +361,5 @@ xlabel(patternax,"Steer Angle (deg)"); ylabel(patternax,"Amplitude (dB)"); title
 plot(patternax,steerangles,initialamp - max(initialamp),'DisplayName','Uncalibrated Array Factor');
 plot(patternax,steerangles,finalamp - max(finalamp),'DisplayName','Calibrated Array Factor');
 plot(patternax,steerangles,simpattern - max(simpattern),'DisplayName','Simulated Array Factor');
+
 end

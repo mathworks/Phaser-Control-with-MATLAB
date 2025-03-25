@@ -7,7 +7,7 @@ function radarPlutoSetup(tx,rx,fs,nSamples)
 tx.SamplingRate = fs;
 tx.EnabledChannels = [1,2];
 tx.CenterFrequency = rx.CenterFrequency;
-tx.AttenuationChannel0 = -3;
+tx.AttenuationChannel0 = -80;
 tx.AttenuationChannel1 = -3;
 tx.EnableCyclicBuffers = true;
 tx.DataSource = "DMA";

@@ -23,7 +23,7 @@ classdef AntennaInteractor < handle
             this.NumSamples = rx.SamplesPerFrame;
             this.Model = model;
             this.Fc = fc;
-            this.SubSteer = phased.SteeringVector("SensorArray",this.Model.Subarray,'NumPhaseShifterBits',7);
+            this.SubSteer = phased.SteeringVector("SensorArray",this.Model.Subarray);
             this.ArraySteer = phased.SteeringVector("SensorArray",this.Model);
             this.AnalogWeights = calValues.AnalogWeights;
             this.DigitalWeights = calValues.DigitalWeights;
@@ -52,20 +52,27 @@ classdef AntennaInteractor < handle
         end
 
         function [sumdiffampdelta,sumdiffphasedelta,sumpatterndata,diffpatternData] = captureMonopulsePattern(this,steerangles)
-            sumpatterndata = zeros(this.NumSamples,numel(steerangles));
-            diffpatternData = zeros(this.NumSamples,numel(steerangles));
+            nangles = length(steerangles);
+            sumpatterndata = zeros(this.NumSamples,nangles);
+            diffpatternData = zeros(this.NumSamples,nangles);
+            sumdiffampdelta = zeros(1,nangles);
+            sumdiffphasedelta = zeros(1,nangles);
             for ii = 1 : numel(steerangles)
-                % capture data
-                [analogweights,digitalweights] = this.getAllWeights(steerangles(ii));
-                rxdata = this.steerAnalog(analogweights);
-
-                % sum
-                sumpatterndata(:,ii) = rxdata * conj(digitalweights);
-
-                % diff
-                diffdigitalweights = digitalweights .* [1;-1];
-                diffpatternData(:,ii) = rxdata * conj(diffdigitalweights);
+                [sumdiffampdelta(ii),sumdiffphasedelta(ii),sumpatterndata(:,ii),diffpatternData(:,ii)] = captureMonopulseSnapshot(this,steerangles(ii));
             end
+        end
+
+        function [sumdiffampdelta,sumdiffphasedelta,sumpatterndata,diffpatternData] = captureMonopulseSnapshot(this,steerangle)
+            % capture data
+            [analogweights,digitalweights] = this.getAllWeights(steerangle);
+            rxdata = this.steerAnalog(analogweights);
+
+            % sum
+            sumpatterndata = rxdata * conj(digitalweights);
+
+            % diff
+            diffdigitalweights = digitalweights .* [1;-1];
+            diffpatternData = rxdata * conj(diffdigitalweights);
 
             % calulate sum and diff amplitude and phase deltas
             sumamp = mag2db(helperGetAmplitude(sumpatterndata));
@@ -118,6 +125,11 @@ classdef AntennaInteractor < handle
         function codes = getGainCodes(~,analogWeights)
             codes = helperGainCodes(analogWeights);
         end
+
+        function cleanup(obj)
+            obj.PlutoControl.release();
+            obj.ArrayControl.release();
+        end
     end
 
     methods (Access = private)
@@ -126,12 +138,12 @@ classdef AntennaInteractor < handle
             defaultDigitalWeights = this.DigitalWeights;
 
             % get steering weights
-            analogweights = this.SubSteer(this.Fc,steerangle);
-            digitalweights = this.ArraySteer(this.Fc,steerangle);
+            uncalanalogweights = this.SubSteer(this.Fc,steerangle);
+            uncaldigitalweights = this.ArraySteer(this.Fc,steerangle);
 
             % Apply calibration weights
-            analogweights = analogWeightsCalAdjustment(analogweights,defaultAnalogWeights);
-            digitalweights = digitalWeightsCalAdjustment(digitalweights,defaultDigitalWeights);
+            analogweights = analogWeightsCalAdjustment(uncalanalogweights,defaultAnalogWeights);
+            digitalweights = digitalWeightsCalAdjustment(uncaldigitalweights,defaultDigitalWeights);
         end
 
         function [analogweights,digitalweights] = getAllWeightsNull(this,steerangle,nullangle)
