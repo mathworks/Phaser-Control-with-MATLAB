@@ -3,7 +3,8 @@ function [rx,tx,bf,bf_TDD] = setupLabRadar(fc,prf,nPulses,fs,rampbandwidth)
 % labs.
 
 % Pulse time has to be rounded to the nearest ms
-tpulse = ceil((1/prf)*1e3)*1e-3;
+%tpulse = ceil((1/prf)*1e3)*1e-3;
+tpulse = 1/prf;
 
 % We set up the sweep to occupy as much of the pulse as possible
 tsweep = getFMCWSweepTime(tpulse,tpulse);
