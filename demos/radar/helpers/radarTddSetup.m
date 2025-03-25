@@ -1,4 +1,4 @@
-function radarTddSetup(bf_TDD,tpulse,nPulses,tsweep)
+function radarTddSetup(bf_TDD,tpulse,nPulses)
 % Setup the TDD Engine for Radar
 %
 % Copyright 2023 The MathWorks, Inc.
@@ -14,7 +14,7 @@ bf_TDD.BurstCount = nPulses;
 bf_TDD.Ch0Enable = 1;
 bf_TDD.Ch0Polarity = 0;
 bf_TDD.Ch0On = 0;
-bf_TDD.Ch0Off = tsweep;
+bf_TDD.Ch0Off = 0.1;
 bf_TDD.Ch1Enable = 1;
 bf_TDD.Ch1Polarity = 0;
 bf_TDD.Ch1On = tStartCollection;
