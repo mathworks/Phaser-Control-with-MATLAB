@@ -20,7 +20,7 @@ sweepoffsetsamples = ceil(tstartsweep * fs);
 sweepsamples = 1:ceil(tsweep * fs) + sweepoffsetsamples;
 
 % Get end index of pulse
-pulseendsample = ceil(tpulse * fs);
+pulseendsample = round(tpulse * fs);
 
 % Get all of the pulse start indices
 pulsestartsamples = (0:nPulses-1)*pulseendsample;
