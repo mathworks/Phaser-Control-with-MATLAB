@@ -3,11 +3,7 @@ function [rx,tx,bf,bf_TDD] = setupLabRadar(fc,prf,nPulses,fs,rampbandwidth)
 % labs.
 
 % Pulse time has to be rounded to the nearest ms
-%tpulse = ceil((1/prf)*1e3)*1e-3;
 tpulse = 1/prf;
-
-% We set up the sweep to occupy as much of the pulse as possible
-tsweep = getFMCWSweepTime(tpulse,tpulse);
 
 % Get the total number of samples in a pulse repetition period
 nSamples = ceil(tpulse * nPulses * fs);
@@ -39,10 +35,10 @@ setAnalogBfWeights(bf,calibrationweights.AnalogWeights);
 % Setup Phase Locked Loop (PLL)
 bf.Frequency = (fc+rx.CenterFrequency)/4;
 BW = rampbandwidth / 4;
-num_steps = 2^9;
+tpulseus = tpulse*1e6;
 bf.FrequencyDeviationRange = BW;
-bf.FrequencyDeviationStep = ((BW) / num_steps);
-bf.FrequencyDeviationTime = tsweep*1e6;
+bf.FrequencyDeviationStep = int64((BW) / tpulseus);
+bf.FrequencyDeviationTime = tpulseus;
 bf.RampMode = "single_sawtooth_burst";
 bf.TriggerEnable = true;
 bf.EnablePLL = true;
