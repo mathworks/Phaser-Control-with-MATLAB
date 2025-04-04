@@ -13,7 +13,7 @@ end
 % rectangle.
 if isempty(txWaveform)
     amp = 0.9 * 2^15;
-    txWaveform = amp*ones(10*rx.SamplesPerFrame,2);
+    txWaveform = amp*ones(rx.SamplesPerFrame,2);
 elseif size(txWaveform,2) == 1
     txWaveform = [txWaveform txWaveform];
 end
