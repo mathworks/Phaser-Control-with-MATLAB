@@ -15,8 +15,11 @@ function generateCalibrationWeights()
 % Turn off obsolete system object warning
 warning('off','MATLAB:system:ObsoleteSystemObjectMixin');
 
-% Find the hb100 center frequency
+% Find the hb100 center frequency and save it
 fc_hb100 = findTxFrequency();
+filepath = fileparts(which('generateCalibrationWeights'));
+hb100_filename = [filepath,'\','HB100_Fc.mat'];
+save(hb100_filename,"fc_hb100");
 
 pause(5);
 
