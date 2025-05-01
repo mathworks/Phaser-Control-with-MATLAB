@@ -27,7 +27,15 @@ pulsestartsamples = (0:nPulses-1)*pulseendsample;
 allsweepsamples = repmat(sweepsamples',1,nPulses);
 sampleidxs = allsweepsamples + pulsestartsamples;
 
-% Get output data rearranged
-outdata = indata(sampleidxs);
+% Get output data rearranged. If we are trying to index a value that is too
+% high, return all zeros. Sometimes pluto can return incorrect number of
+% samples.
+nCollectedSamples = size(indata,1);
+nRequiredSamples = max(sampleidxs,[],"all");
+if nRequiredSamples > nCollectedSamples
+    outdata = zeros(size(sampleidxs));
+else
+    outdata = indata(sampleidxs);
+end
 
 end
