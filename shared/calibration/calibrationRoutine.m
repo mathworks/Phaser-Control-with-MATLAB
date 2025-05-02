@@ -316,8 +316,8 @@ combinedamplitude = max(abs(sigfft));
 % Plot the digital phase offset pattern and calibration value
 ax = axes(figure); hold(ax,"on");
 title(ax,"Digital Phase Calibration"); ylabel(ax,"dB"); xlabel(ax,"Channel 2 Phase Offset (deg)");
-plot(ax,channel2phase,combinedamplitude,"DisplayName","Combined Channel Power");
-scatter(ax,channel2phase(phaseIdx),combinedamplitude(phaseIdx),"DisplayName","Selected Phase Offset");
+plot(ax,rad2deg(channel2phase),combinedamplitude,"DisplayName","Combined Channel Power");
+scatter(ax,rad2deg(channel2phase(phaseIdx)),combinedamplitude(phaseIdx),"DisplayName","Selected Phase Offset");
 legend('location','southeast');
 
 % Set the new digital weights
