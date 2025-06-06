@@ -6,6 +6,9 @@ function [rx,bf,phaserModel,tx,bf_TDD] = setupAntenna(fc)
     % Setup the pluto
     [rx,tx] = setupPluto();
 
+    % Set rx filter width
+    rx.RFBandwidth = rx.SamplingRate;
+
     % Setup the phaser
     bf = setupPhaser(rx,fc);
     bf.RxPowerDown(:) = 0;
