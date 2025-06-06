@@ -9,8 +9,8 @@ fs = 30e6;
 
 % Setup Radar
 [rx,tx,bf] = setupBistaticRadar(fc,fs,nSamples);
-tx.RFBandwidth = fs; % Reduce effect of filter on our Tx waveform
 
 %% Begin Signal Transmit
+disp('If logical 1 output, then you are transmitting:')
 tx([sig sig])
 
