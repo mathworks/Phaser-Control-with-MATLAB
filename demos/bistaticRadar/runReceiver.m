@@ -1,6 +1,14 @@
-%% Before capturing data, calibrate the beamformer
+% Run this script while runTransmitter.m is running from a different Phaser
+% board and location. Ensure that the calibration script  in
+% shared\calibration\generateCalibrationWeights has been run so that
+% calibration weights have been saved.
 
-generateCalibrationWeights();
+% The first part of this script locations the transmitter direction. This
+% is critical so that the reference and surveillance channels can be
+% steered accordingly.
+
+% The second part of this script runs the bistatic radar and saves the data
+% after running.
 
 %% Search for the transmitter location by sweeping the beamformer
 
@@ -39,28 +47,33 @@ refWeights = steervec(getElementPosition(ai.Model.Subarray)/lambda,txAng);
 % Generate null weights
 survWeights = nullweights(getElementPosition(ai.Model.Subarray)/lambda,survAng,txAng);
 
+% Save the steering weights
+steerWeights = [refWeights survWeights];
+
 % Set the number of samples to collect.
 nSamples = 1e6;
 ai.NumSamples = nSamples;
 
-% Ref channel is 1, surv channel is 2
-steerWeights = [refWeights survWeights];
+%% Run the bistatic radar receiver
 
 % Look for targets max 200 m, 40 m/s
-maxRange = 200;
+maxRange = 100;
 maxVel = 40;
 
 % Create scope
 scope = phased.RangeDopplerScope(IQDataInput=false,DopplerLabel='Velocity (m/s)');
 
 % Run bistatic radar
-for i = 1:100
+nRuns = 60;
+savedData = cell(nRuns,1);
+for i = 1:nRuns
     % Capture data
     rxdata = ai.steerAnalog(steerWeights);
+    savedData{i} = rxdata;
 
     % Get ref and surv
-    ref = rxdata(:,1);
-    surv = rxdata(:,2);
+    ref = rxdata(:,2);
+    surv = rxdata(:,1);
 
     % Least squares adaptive filtering
     nTaps = 100;
@@ -72,6 +85,16 @@ for i = 1:100
     % Plot range-Doppler
     scope(resp,range',speed');
 end
+
+% Save data
+fs = ai.Fs;
+fc = ai.Fc;
+t = char(datetime("now","Format",'ss_mm_hh_dd_MM'));
+filename = sprintf('BistaticData_%s.mat',t);
+save(filename,"savedData","fs","fc","maxRange","maxVel");
+
+% Cleanup the antenna interactor
+ai.cleanup();
 
 %% Helper functions
 
