@@ -63,27 +63,35 @@ maxVel = 40;
 % Create scope
 scope = phased.RangeDopplerScope(IQDataInput=false,DopplerLabel='Velocity (m/s)');
 
+% Can turn processing on or off. Turn it off for pure data collection.
+processData = true;
+
 % Run bistatic radar
 nRuns = 60;
 savedData = cell(nRuns,1);
+t = tic;
+time = zeros(nRuns,1);
 for i = 1:nRuns
     % Capture data
     rxdata = ai.steerAnalog(steerWeights);
     savedData{i} = rxdata;
+    time(i) = toc(t);
 
-    % Get ref and surv
-    ref = rxdata(:,2);
-    surv = rxdata(:,1);
-
-    % Least squares adaptive filtering
-    nTaps = 100;
-    survfilt = helperFrequencyDomainFilter(ref,surv,nTaps);
-
-    % Calculate range-Doppler Response
-    [resp,range,speed] = helperBistaticRangeDoppler(survfilt,ref,ai.Fs,ai.Fc,maxRange,maxVel,false);
-
-    % Plot range-Doppler
-    scope(resp,range',speed');
+    if processData
+        % Get ref and surv
+        ref = rxdata(:,2);
+        surv = rxdata(:,1);
+    
+        % Least squares adaptive filtering
+        nTaps = 100;
+        survfilt = helperFrequencyDomainFilter(ref,surv,nTaps);
+    
+        % Calculate range-Doppler Response
+        [resp,range,speed] = helperBistaticRangeDoppler(survfilt,ref,ai.Fs,ai.Fc,maxRange,maxVel,false);
+    
+        % Plot range-Doppler
+        scope(resp,range',speed');
+    end
 end
 
 % Save data
