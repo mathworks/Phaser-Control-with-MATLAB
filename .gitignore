@@ -1,4 +1,2 @@
-GainProfile.mat
-CalibrationWeights.mat
-HB100_Fc.mat
+*.mat
 *.asv

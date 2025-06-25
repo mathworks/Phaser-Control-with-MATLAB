@@ -93,7 +93,6 @@ for azangle = steerangles
 
     % Adjust the beamforming weights with the calibration weights
     analogWeights = analogWeightsCalAdjustment(analogWeights,calibrationweights.AnalogWeights);
-    digitalWeights = digitalWeightsCalAdjustment(digitalWeights,calibrationweights.DigitalWeights);
 
     % Setup the analog beamformers
     setAnalogBfWeights(bf,analogWeights);
@@ -102,7 +101,7 @@ for azangle = steerangles
     data = captureTransmitWaveform(rx,tx,bf,txWaveform);
 
     % Apply digital weights
-    data = data * conj(digitalWeights);
+    data = data .* digitalWeights.';
 
     % Arrange data into pulses
     data = arrangePulseData(data,rx,bf,bf_TDD);

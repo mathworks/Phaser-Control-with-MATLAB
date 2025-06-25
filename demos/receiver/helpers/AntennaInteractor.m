@@ -5,7 +5,6 @@ classdef AntennaInteractor < handle
     properties
         ArrayControl
         PlutoControl
-        NumSamples
         Model
         Fc
         SubSteer
@@ -15,12 +14,34 @@ classdef AntennaInteractor < handle
         DigitalWeights
     end
 
+    properties (Dependent)
+        NumSamples
+        Fs
+    end
+
+    methods
+        function val = get.NumSamples(this)
+            val = this.PlutoControl.SamplesPerFrame;
+        end
+
+        function set.NumSamples(this,val)
+            this.PlutoControl.SamplesPerFrame = val;
+        end
+
+        function val = get.Fs(this)
+            val = this.PlutoControl.SamplingRate;
+        end
+
+        function set.Fs(this,val)
+            this.PlutoControl.SamplingRate = val;
+        end
+    end
+
     methods
         function this = AntennaInteractor(fc,calValues)
             [rx,bf,model] = setupAntenna(fc);
             this.ArrayControl = bf;
             this.PlutoControl = rx;
-            this.NumSamples = rx.SamplesPerFrame;
             this.Model = model;
             this.Fc = fc;
             this.SubSteer = phased.SteeringVector("SensorArray",this.Model.Subarray);

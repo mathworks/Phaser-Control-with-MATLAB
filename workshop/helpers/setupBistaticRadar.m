@@ -19,6 +19,7 @@ tx.AttenuationChannel0 = -80;
 tx.AttenuationChannel1 = -3;
 tx.EnableCyclicBuffers = true;
 tx.DataSource = "DMA";
+tx.RFBandwidth = fs; % Reduce effect of filter on our Tx waveform
 
 % Setup beamformers all to max gain with no phase shifts
 calibrationweights = loadCalibrationWeights();
@@ -35,6 +36,7 @@ bf.TriggerEnable = false;
 % bf.EnablePLL = true;
 % bf.EnableTxPLL = true;
 % bf.EnableOut1 = false;
+
 % From Jon:
 BW = 500e6 / 4; num_steps = 1000;
 bf.FrequencyDeviationRange = BW; % frequency deviation range in H1.  This is the total freq deviation of the complete freq ramp
