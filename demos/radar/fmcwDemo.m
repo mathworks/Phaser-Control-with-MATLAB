@@ -64,6 +64,12 @@ tx.DataSource = "DMA";
 amp = 0.9 * 2^15;
 txWaveform = amp*ones(nSamples,2);
 
+% Call and release receiver and transmitter to init
+rx();
+tx(txWaveform);
+release(rx);
+release(tx);
+
 %% Setup the Phaser
 
 % Setup beamformers all to max gain with no phase shifts

@@ -1,4 +1,4 @@
-clear all
+clear;
 pause(3)
 
 % Configure Signal
@@ -8,7 +8,7 @@ fc = 10e9;
 fs = 30e6;
 
 % Setup Radar
-[rx,tx,bf] = setupBistaticRadar(fc,fs,nSamples);
+[~,tx,~] = setupBistaticRadar(fc,fs,nSamples);
 
 %% Begin Signal Transmit
 disp('If logical 1 output, then you are transmitting:')
