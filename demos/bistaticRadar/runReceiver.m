@@ -64,14 +64,16 @@ maxVel = 40;
 scope = phased.RangeDopplerScope(IQDataInput=false,DopplerLabel='Velocity (m/s)');
 
 % Can turn processing on or off. Turn it off for pure data collection.
-processData = true;
+processData = false;
 
 % Run bistatic radar
 nRuns = 60;
+tRun = 60;
 savedData = cell(nRuns,1);
 t = tic;
 time = zeros(nRuns,1);
-for i = 1:nRuns
+i = 1;
+while toc(t) < tRun
     % Capture data
     rxdata = ai.steerAnalog(steerWeights);
     savedData{i} = rxdata;
@@ -92,6 +94,7 @@ for i = 1:nRuns
         % Plot range-Doppler
         scope(resp,range',speed');
     end
+    i = i+1;
 end
 
 % Save data
@@ -99,7 +102,7 @@ fs = ai.Fs;
 fc = ai.Fc;
 t = char(datetime("now","Format",'ss_mm_hh_dd_MM'));
 filename = sprintf('BistaticData_%s.mat',t);
-save(filename,"savedData","fs","fc","maxRange","maxVel");
+save(filename,"savedData","fs","fc","maxRange","maxVel","time");
 
 % Cleanup the antenna interactor
 ai.cleanup();
