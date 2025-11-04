@@ -86,7 +86,7 @@ while toc(t) < tRun
     
         % Least squares adaptive filtering
         nTaps = 100;
-        survfilt = helperFrequencyDomainFilter(ref,surv,nTaps);
+        survfilt = helperWeinerFilter(ref,surv,nTaps);
     
         % Calculate range-Doppler Response
         [resp,range,speed] = helperBistaticRangeDoppler(survfilt,ref,ai.Fs,ai.Fc,maxRange,maxVel,false);
@@ -123,12 +123,20 @@ function weights = nullweights(pos,dsteer,dnull)
     weights = wd-wn*rn;
 end
 
-function survest = helperFrequencyDomainFilter(ref,surv,M)
-    % Compute the weights
-    weights = ifft(fft(surv)./fft(ref));
-
-    % Apply the first M weights
-    survest = surv-filter(weights(1:M),1,ref);
+function survest = helperWeinerFilter(surv,ref,M)
+     % Compute autocorrelation and cross-correlation with conjugates
+    rxx = xcorr(ref, M-1, 'biased');
+    rsx = xcorr(surv, ref, M-1, 'biased');
+    
+    % Extract centered values (zero lag at index M)
+    Rxx = toeplitz(rxx(M:end));
+    rsx_vec = conj(rsx(M:end));
+    
+    % Solve Wiener-Hopf equation
+    h = conj(Rxx \ rsx_vec);
+    
+    % Remove the filtered reference from surveillance
+    survest = surv - filter(h,1,ref);
 end
 
 function [resp,range,speed] = helperBistaticRangeDoppler(surv,ref,fs,fc,maxRange,maxSpeed,mtifilter)
