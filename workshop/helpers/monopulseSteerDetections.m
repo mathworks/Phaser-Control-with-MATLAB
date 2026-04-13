@@ -1,4 +1,4 @@
-function detectionsOut = maxSteerDetections(data,time,config,trueRange,args)
+function detectionsOut = monopulseSteerDetections(data,time,config,trueRange,args)
 % Get detections in data by looking for the steer angle with the
 % maximum SNR.
 arguments
@@ -20,15 +20,6 @@ steerang = config.SteerAngles;
 tStartSweep = config.SweepStartTime;
 tFrame = config.FrameTime;
 
-% Setup mti
-if args.MtiFilter
-    mti = [1 -2 1];
-    nfilt = length(mti);
-else
-    mti = [];
-    nfilt = 1;
-end
-
 % Initialize detections out
 nCaptures = size(data,1);
 nAngles = size(data,2);
@@ -39,6 +30,15 @@ pfa = 1e-6;
 guard = 2;
 train = 2;
 cfar = phased.CFARDetector2D(ProbabilityFalseAlarm=pfa,GuardBandSize=[guard guard],TrainingBandSize=[train train],NoisePowerOutputPort=true);
+
+% Setup mti
+if args.MtiFilter
+    mti = [1 -2 1];
+    nfilt = length(mti);
+else
+    mti = [];
+    nfilt = 1;
+end
 
 % Get cells under test
 minRange = 0.1;
@@ -58,7 +58,7 @@ measNoise = diag([azErr;rangeErr;speedErr]);
 sweepSlope = rampBandwidth/tSweep;
 rd = phased.RangeDopplerResponse(DopplerOutput="Speed",...
     OperatingFrequency=fc,SampleRate=fs,RangeMethod="FFT",...
-    SweepSlope=sweepSlope,PRFSource="Property",PRF=prf);
+    SweepSlope=sweepSlope,PRFSource="Property",PRF=prf,RangeWindow='Hamming',DopplerWindow='Hamming');
 
 % Plot the range-Doppler response for each angle
 for iCapture = 1:nCaptures
@@ -76,35 +76,85 @@ for iCapture = 1:nCaptures
         % Get data
         cdata = data{iCapture,iAng};
 
-        % Get rd response
-        datapulse = arrangePulseDataFromTiming(cdata,fs,tSweep,tStartSweep,tFrame,nPulses);
-
+        % Get rd response for sum and diff
+        sumdata = cdata;
+        diffdata = cdata .* [1 -1];
+        
+        % Arrange into pulses
+        sumdatapulse = arrangePulseDataFromTiming(sumdata,fs,tSweep,tStartSweep,tFrame,nPulses);
+        diffdatapulse = arrangePulseDataFromTiming(diffdata,fs,tSweep,tStartSweep,tFrame,nPulses);
+        
         % MTI filter
         if args.MtiFilter
-            datapulse = filter(mti,1,datapulse,[],2);
-            datapulse = datapulse(:,nfilt:end);
+            sumdatapulse = filter(mti,1,sumdatapulse,[],2);
+            sumdatapulse = sumdatapulse(:,nfilt:end);
+            diffdatapulse = filter(mti,1,diffdatapulse,[],2);
+            diffdatapulse = diffdatapulse(:,nfilt:end);
         end
-
-        % RD response
-        [rddata,range,speed] = step(rd,datapulse);
+        
+        [sumrddata,~,~] = step(rd,sumdatapulse);
+        [diffrddata,range,speed] = step(rd,diffdatapulse);
     
         % Save the steer angle
         cang = steerang(iAng);
     
-        % Get index of detections
-        [d,noise] = cfar(abs(rddata).^2,cut);
+        % Get index of detections on the sum data
+        [d] = cfar(abs(sumrddata).^2,cut);
         detidx = cut(:,d');
     
         % Get the range, speed, steer angle, and SNR for the detections
         detRange = range(detidx(1,:))';
         detSpeed = speed(detidx(2,:))';
-        detSteer = repmat(cang,1,length(detRange));
-        detnoise = noise(d).';
-        detpow = abs(arrayfun(@(row,col)rddata(row,col),detidx(1,:),detidx(2,:))).^2;
-        detsnr = detpow./detnoise;
+        sumdetpow = abs(arrayfun(@(row,col)sumrddata(row,col),detidx(1,:),detidx(2,:))).^2;
+        diffdetpow = abs(arrayfun(@(row,col)diffrddata(row,col),detidx(1,:),detidx(2,:))).^2;
+        detsdr = sumdetpow./diffdetpow;
+        % 
+        % tl = tiledlayout(figure,"horizontal");
+        % plotrdImag(nexttile(tl),sumrddata,0,20,range,speed,detRange,detSpeed,['Angle = ',num2str(cang),', Sum']);
+        % plotrdImag(nexttile(tl),diffrddata,0,20,range,speed,detRange,detSpeed,['Angle = ',num2str(cang),', Diff']);
+
+        if isempty(detRange)
+            continue
+        end
+
+        % Get cluster detections in range-Doppler for the current angle
+        detClusters = dbscan([detRange' detSpeed'],1,3);
+
+        % Create an objectDetection for each cluster
+        singles = detClusters == -1;
+        nSingles = sum(singles);
+        clusters = unique(detClusters(detClusters > 0));
+        nClusters = length(clusters);
+        nDetections = nSingles + nClusters;
+        clusterMeas = zeros(4,nDetections);
+        didx = 1;
+    
+        % Create detections from the unclustered measurements
+        unclustered = find(singles);
+        for isingle = 1:nSingles
+            cidx = unclustered(isingle);
+            srange = detRange(cidx);
+            sspeed = detSpeed(cidx);
+            ssdr = detsdr(cidx);
+            clusterMeas(:,didx) = [srange;sspeed;cang;ssdr];
+            didx = didx + 1;
+        end
+    
+        % Create detections from the clustered measurements. use sdr for
+        % highest power detection.
+        for icluster = 1:nClusters
+            % Get values for current cluster
+            crange = mean(detRange(detClusters == icluster));
+            cspeed = mean(detSpeed(detClusters == icluster));
+            [~,cpowidx] = max(sumdetpow);
+            %csdr = mean(detsdr(detClusters == icluster));
+            csdr = detsdr(cpowidx);
+            clusterMeas(:,didx) = [crange;cspeed;cang;csdr];
+            didx = didx + 1;
+        end
     
         % Save detections and RD response for angle processing
-        ndets = size(detidx,2);
+        ndets = size(clusterMeas,2);
         endDetIdx = startDetIdx + ndets - 1;
     
         % Handle overflow if we exceed pre-allocated number of detections
@@ -115,20 +165,16 @@ for iCapture = 1:nCaptures
         end
     
         % Save detection values
-        detectionMeasurements(:,startDetIdx:endDetIdx) = [detRange;detSpeed;detSteer;detsnr];
+        detectionMeasurements(:,startDetIdx:endDetIdx) = clusterMeas;
         startDetIdx = endDetIdx + 1;
-        rdprocessed(:,:,iAng) = rddata;
-    
-        % Get only the populated detection values
-        if startDetIdx == 1
-            continue
-        else
-            detectionMeasurements = detectionMeasurements(:,1:startDetIdx-1);
-        end
+        rdprocessed(:,:,iAng) = sumrddata;
     end
 
+    % Get only the populated detection values
     if startDetIdx == 1
-            continue
+        continue
+    else
+        detectionMeasurements = detectionMeasurements(:,1:startDetIdx-1);
     end
     
     % Get cluster detections in range-Doppler
@@ -191,4 +237,12 @@ function dout = getNearestDetection(detections,truerange)
     else
         dout = detections{minidx};
     end
+end
+
+function plotrdImag(ax,rddata,rmin,rmax,range,speed,detRange,detSpeed,axtitle)
+    hold(ax,"on");
+    keeprange = range >= rmin & range <= rmax;
+    imagesc(ax,speed,range(keeprange),abs(rddata(keeprange,:)));
+    scatter(ax,detSpeed,detRange);
+    title(ax,axtitle);
 end
