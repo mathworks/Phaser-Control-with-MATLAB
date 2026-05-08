@@ -8,29 +8,7 @@ function outdata = arrangePulseDataFromTiming(indata,fs,tsweep,tstartsweep,tpuls
 % Combine data from channels with calibration weights
 indata = applyDigitalCalWeights(indata);
 
-% Get the number of samples into the pulse that the sweep starts
-sweepoffsetsamples = ceil(tstartsweep * fs);
-
-% Get indices within a pulse that contain the sweep data
-sweepsamples = 1:ceil(tsweep * fs) + sweepoffsetsamples;
-
-% Get end index of pulse
-pulseendsample = round(tpulse * fs);
-
-% Get all of the pulse start indices
-pulsestartsamples = (0:nPulses-1)*pulseendsample;
-allsweepsamples = repmat(sweepsamples',1,nPulses);
-sampleidxs = allsweepsamples + pulsestartsamples;
-
-% Get output data rearranged. If we are trying to index a value that is too
-% high, return all zeros. Sometimes pluto can return incorrect number of
-% samples.
-nCollectedSamples = size(indata,1);
-nRequiredSamples = max(sampleidxs,[],"all");
-if nRequiredSamples > nCollectedSamples
-    outdata = zeros(size(sampleidxs));
-else
-    outdata = indata(sampleidxs);
-end
+% Arrange the combined data
+outdata = arrangeSinglePulseDataFromTiming(indata,fs,tsweep,tstartsweep,tpulse,nPulses);
 
 end

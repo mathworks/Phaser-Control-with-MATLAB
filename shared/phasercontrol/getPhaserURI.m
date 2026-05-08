@@ -3,6 +3,6 @@ function [phaserURI] = getPhaserURI()
 %
 % Copyright 2023 The MathWorks, Inc.
 
-phaserURI = 'ip:phaser.local';
+phaserURI = 'ip:phaserA.local';
 
 end
